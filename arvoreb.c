@@ -17,85 +17,129 @@ typedef struct avl {
 
 typedef struct ArvAvl* TipoDicionario;
 
-int maior(int a, int b) {
-	if (a > b) {
-		return a;
-	} else {
-		return b;
-	}
+void Pesquisa(TipoRegistro *x, TipoApontador *p)
+{ if (*p == NULL) 
+  { printf("Erro: Registro nao esta presente na arvore\n");
+    return;
+  }
+  if (x->Chave < (*p)->Reg.Chave) 
+  { Pesquisa(x, &(*p)->Esq);
+    return;
+  }
+  if (x->Chave > (*p)->Reg.Chave)
+  Pesquisa(x, &(*p)->Dir);
+  else *x = (*p)->Reg;
+} 
+
+void Insere(TipoRegistro x, TipoApontador *p)
+{ if (*p == NULL) 
+  { *p = (TipoApontador)malloc(sizeof(TipoNo));
+    (*p)->Reg = x; 
+    (*p)->Esq = NULL; 
+    (*p)->Dir = NULL;
+    return;
+  }
+  if (x.Chave < (*p)->Reg.Chave) 
+  { Insere(x, &(*p)->Esq); 
+    return; 
+  }
+  if (x.Chave > (*p)->Reg.Chave)
+  Insere(x, &(*p)->Dir);
+  else printf("Erro : Registro ja existe na arvore\n");
+} 
+
+void Inicializa(TipoApontador *Dicionario)
+{ *Dicionario = NULL; }
+
+void Antecessor(TipoApontador q, TipoApontador *r)
+{ if ((*r)->Dir != NULL) 
+  { Antecessor(q, &(*r)->Dir);
+    return;
+  }
+  q->Reg = (*r)->Reg;
+  q = *r; 
+  *r = (*r)->Esq;
+  free(q);
+} 
+
+void Retira(TipoRegistro x, TipoApontador *p)
+{  TipoApontador Aux;
+  if (*p == NULL) 
+  { printf("Erro : Registro nao esta na arvore\n");
+    return;
+  }
+  if (x.Chave < (*p)->Reg.Chave) { Retira(x, &(*p)->Esq); return; }
+  if (x.Chave > (*p)->Reg.Chave) { Retira(x, &(*p)->Dir); return; }
+  if ((*p)->Dir == NULL) 
+  { Aux = *p;  *p = (*p)->Esq;
+    free(Aux);
+    return;
+  }
+  if ((*p)->Esq != NULL) 
+  { Antecessor(*p, &(*p)->Esq);
+    return;
+  }
+  Aux = *p;  *p = (*p)->Dir;
+  free(Aux);
+}  
+
+void Central(TipoApontador p)
+{ if (p == NULL) return;
+  Central(p->Esq);
+  printf("%ld\n", p->Reg.Chave);
+  Central(p->Dir);
+} 
+
+void TestaI(TipoNo *p, int pai)
+{ if (p == NULL) return;
+  if (p->Esq != NULL) 
+  { if (p->Reg.Chave < p->Esq->Reg.Chave) 
+    { printf("Erro: Pai %ld menor que filho a esquerda %ld\n", p->Reg.Chave, 
+             p->Esq->Reg.Chave);
+      exit(1);
+    }
+  }
+  if (p->Dir != NULL) 
+  { if (p->Reg.Chave > p->Dir->Reg.Chave) 
+    { printf("Erro: Pai %ld maior que filho a direita %ld\n",  p->Reg.Chave, 
+             p->Dir->Reg.Chave);
+    exit(1);
+    }
+  }
+  TestaI(p->Esq, p->Reg.Chave);
+  TestaI(p->Dir, p->Reg.Chave);
 }
 
-void Inicializa(TipoDicionario *Dicionario) {
-	*Dicionario = NULL;
+
+void Testa(TipoNo *p)
+{ if (p != NULL)
+  TestaI(p, p->Reg.Chave);
 }
 
-ArvAvl* rotacaoDireita( ArvAvl * K2 ) {
-	ArvAvl * K1;
-	K1 = K2->esq;
-	K2->esq = K1->dir;
-	K1->dir = K2;
-	K2->altura = maior( altura( K2->esq ), altura( K2->dir ) ) + 1; 
-	K1->altura = maior( altura( K1->esq ), K2->altura ) + 1;
-	
-	return K1;  //nova raiz
+double rand0a1() {
+  double resultado=  (double) rand()/ RAND_MAX; /* Dividir pelo maior inteiro */
+  if(resultado>1.0) resultado = 1.0;
+  return resultado;
 }
 
-ArvAvl* rotacaoEsquerda( ArvAvl * K1 ) {
-	ArvAvl * K2;
-	K2 = K1->dir;
-	K1->dir = K2->esq;
-	K2->esq = K1;
-	K1->altura = maior( altura( K1->esq ), altura( K1->dir ) ) + 1; 
-	K2->altura = maior( altura( K2->dir ), K1->altura ) + 1;
-	
-	return K2;  //nova raiz
+void Permut( TipoChave A[], int n) {
+  int i,j; TipoChave b;
+  for(i = n; i>0; i --) 
+    { j = (i * rand0a1());
+      b = A[i];
+      A[i] = A[j];
+      A[j] = b;
+    }
 }
 
-ArvAvl * rotacaoEsquerdaDireita( ArvAvl * K3 ) {
-	K3->esq = rotacaoEsquerda( K3->esq );
-	return rotacaoDireita( K3 ); 
-}
-
-ArvAvl * rotacaoDireitaEsquerda( ArvAvl * K1 ) {
-	K1->dir = rotacaoDireita( K1->dir );
-	return rotacaoEsquerda( K1 ); 
-}
-
-ArvAvl* aloca(int info) {
-	ArvAvl *arv;
-	arv = (ArvAvl*)malloc(sizeof(ArvAvl)); arv->info = info;
-	arv->altura = 0;
-	arv->esq = arv->dir = NULL;
-	return arv;
-}
-
-int altura (ArvAvl *a) {
-	if( a == NULL) return -1;
-	return a->altura; 
-}
-
-ArvAvl* insere( int info, ArvAvl *arv ) {
-	if( arv == NULL ) {
-		arv = aloca(info); 
-	}
-	else if( info < arv->info ) {
-		arv->esq = insere( info, arv->esq );
-		if( altura( arv->esq ) - altura( arv->dir ) == 2 ) {
-			if( info < arv->esq->info )
-				arv = rotacaoDireita( arv );
-			else
-				arv = rotacaoEsquerdaDireita( arv );
-		}
-	}
-	else if( info > arv->info ) {
-		arv->dir = insere( info, arv->dir );
-		if( altura( arv->dir ) - altura( arv->esq ) == 2 ) {
-			if( info > arv->dir->info )
-				arv = rotacaoEsquerda( arv );
-			else
-				arv = rotacaoDireitaEsquerda( arv );
-		}	
-	}
-	arv->altura = maior( altura( arv->esq ), altura( arv->dir ) ) + 1;
-	return arv;
-}
+int Altura(TipoApontador p)
+{
+  int e, d;
+  if (p == NULL)
+    return -1;
+  e = Altura(p->Esq);
+  d = Altura(p->Dir);
+  if (e > d)
+    return e+1;
+  else
+return d+1; }
