@@ -1,145 +1,319 @@
-//Arvore Balanceada
-
-#include <stdlib.h>
-#include <stdio.h>
-#include <limits.h>
 #include <sys/time.h>
+#include<stdlib.h>
+#include<stdio.h>
+#include"arvoreb.h"
+#define TRUE  1
+#define FALSE 0
+#define MAX 10
 
-#define MAX 64
-
-// *char info = palavra
-typedef struct avl {
-	char* info;
-	int altura;
-	struct avl *esq;
-	struct avl *dir;
-}ArvAvl;
-
-typedef struct ArvAvl* TipoDicionario;
-
-void Pesquisa(TipoRegistro *x, TipoApontador *p)
-{ if (*p == NULL) 
-  { printf("Erro: Registro nao esta presente na arvore\n");
-    return;
-  }
-  if (x->Chave < (*p)->Reg.Chave) 
-  { Pesquisa(x, &(*p)->Esq);
-    return;
-  }
-  if (x->Chave > (*p)->Reg.Chave)
-  Pesquisa(x, &(*p)->Dir);
-  else *x = (*p)->Reg;
-} 
-
-void Insere(TipoRegistro x, TipoApontador *p)
-{ if (*p == NULL) 
-  { *p = (TipoApontador)malloc(sizeof(TipoNo));
-    (*p)->Reg = x; 
-    (*p)->Esq = NULL; 
-    (*p)->Dir = NULL;
-    return;
-  }
-  if (x.Chave < (*p)->Reg.Chave) 
-  { Insere(x, &(*p)->Esq); 
-    return; 
-  }
-  if (x.Chave > (*p)->Reg.Chave)
-  Insere(x, &(*p)->Dir);
-  else printf("Erro : Registro ja existe na arvore\n");
-} 
-
-void Inicializa(TipoApontador *Dicionario)
-{ *Dicionario = NULL; }
-
-void Antecessor(TipoApontador q, TipoApontador *r)
-{ if ((*r)->Dir != NULL) 
-  { Antecessor(q, &(*r)->Dir);
-    return;
-  }
-  q->Reg = (*r)->Reg;
-  q = *r; 
-  *r = (*r)->Esq;
-  free(q);
-} 
-
-void Retira(TipoRegistro x, TipoApontador *p)
-{  TipoApontador Aux;
-  if (*p == NULL) 
-  { printf("Erro : Registro nao esta na arvore\n");
-    return;
-  }
-  if (x.Chave < (*p)->Reg.Chave) { Retira(x, &(*p)->Esq); return; }
-  if (x.Chave > (*p)->Reg.Chave) { Retira(x, &(*p)->Dir); return; }
-  if ((*p)->Dir == NULL) 
-  { Aux = *p;  *p = (*p)->Esq;
-    free(Aux);
-    return;
-  }
-  if ((*p)->Esq != NULL) 
-  { Antecessor(*p, &(*p)->Esq);
-    return;
-  }
-  Aux = *p;  *p = (*p)->Dir;
-  free(Aux);
-}  
-
-void Central(TipoApontador p)
-{ if (p == NULL) return;
-  Central(p->Esq);
-  printf("%ld\n", p->Reg.Chave);
-  Central(p->Dir);
-} 
-
-void TestaI(TipoNo *p, int pai)
-{ if (p == NULL) return;
-  if (p->Esq != NULL) 
-  { if (p->Reg.Chave < p->Esq->Reg.Chave) 
-    { printf("Erro: Pai %ld menor que filho a esquerda %ld\n", p->Reg.Chave, 
-             p->Esq->Reg.Chave);
-      exit(1);
-    }
-  }
-  if (p->Dir != NULL) 
-  { if (p->Reg.Chave > p->Dir->Reg.Chave) 
-    { printf("Erro: Pai %ld maior que filho a direita %ld\n",  p->Reg.Chave, 
-             p->Dir->Reg.Chave);
-    exit(1);
-    }
-  }
-  TestaI(p->Esq, p->Reg.Chave);
-  TestaI(p->Dir, p->Reg.Chave);
+void EE(TipoApontador *Ap) {
+    TipoApontador Ap1;
+    Ap1 = (*Ap)->Esq;
+    (*Ap)->Esq = Ap1->Dir;
+    Ap1->Dir = *Ap;
+    Ap1->BitE = Vertical;
+    (*Ap)->BitE = Vertical;
+    *Ap = Ap1;
 }
 
+void ED(TipoApontador *Ap) {
+    TipoApontador Ap1, Ap2;
+    Ap1 = (*Ap)->Esq;
+    Ap2 = Ap1->Dir;
+    Ap1->BitD = Vertical;
+    (*Ap)->BitE = Vertical;
+    Ap1->Dir = Ap2->Esq;
+    Ap2->Esq = Ap1;
+    (*Ap)->Esq = Ap2->Dir;
+    Ap2->Dir = *Ap;
+    *Ap = Ap2;
+}
 
-void Testa(TipoNo *p)
-{ if (p != NULL)
-  TestaI(p, p->Reg.Chave);
+void DD(TipoApontador *Ap) {
+    TipoApontador Ap1;
+    Ap1 = (*Ap)->Dir;
+    (*Ap)->Dir = Ap1->Esq;
+    Ap1->Esq = *Ap;
+    Ap1->BitD = Vertical;
+    (*Ap)->BitD = Vertical;
+    *Ap = Ap1;
+}
+
+void DE(TipoApontador *Ap) {
+    TipoApontador Ap1, Ap2;
+    Ap1 = (*Ap)->Dir;
+    Ap2 = Ap1->Esq;
+    Ap1->BitE = Vertical;
+    (*Ap)->BitD = Vertical;
+    Ap1->Esq = Ap2->Dir;
+    Ap2->Dir = Ap1;
+    (*Ap)->Dir = Ap2->Esq;
+    Ap2->Esq = *Ap;
+    *Ap = Ap2;
+}
+
+void IInsere(TipoRegistro x, TipoApontador *Ap,
+        TipoInclinacao *IAp, short *Fim) {
+    if (*Ap == NULL) {
+        *Ap = (TipoApontador) malloc(sizeof (TipoNo));
+        *IAp = Horizontal;
+        (*Ap)->Reg = x;
+        (*Ap)->BitE = Vertical;
+        (*Ap)->BitD = Vertical;
+        (*Ap)->Esq = NULL;
+        (*Ap)->Dir = NULL;
+        *Fim = FALSE;
+        return;
+    }
+    if (x.Chave < (*Ap)->Reg.Chave) {
+        IInsere(x, &(*Ap)->Esq, &(*Ap)->BitE, Fim);
+        if (*Fim) return;
+        if ((*Ap)->BitE != Horizontal) {
+            *Fim = TRUE;
+            return;
+        }
+        if ((*Ap)->Esq->BitE == Horizontal) {
+            EE(Ap);
+            *IAp = Horizontal;
+            return;
+        }
+        if ((*Ap)->Esq->BitD == Horizontal) {
+            ED(Ap);
+            *IAp = Horizontal;
+        }
+        return;
+    }
+    if (x.Chave <= (*Ap)->Reg.Chave) {
+        printf("Erro: Chave ja esta na arvore\n");
+        *Fim = TRUE;
+        return;
+    }
+    IInsere(x, &(*Ap)->Dir, &(*Ap)->BitD, Fim);
+    if (*Fim) return;
+    if ((*Ap)->BitD != Horizontal) {
+        *Fim = TRUE;
+        return;
+    }
+    if ((*Ap)->Dir->BitD == Horizontal) {
+        DD(Ap);
+        *IAp = Horizontal;
+        return;
+    }
+    if ((*Ap)->Dir->BitE == Horizontal) {
+        DE(Ap);
+        *IAp = Horizontal;
+    }
+}
+
+void Insere(TipoRegistro x, TipoApontador *Ap) {
+    short Fim;
+    TipoInclinacao IAp;
+    IInsere(x, Ap, &IAp, &Fim);
+}
+
+void Inicializa(TipoApontador *Dicionario) {
+    *Dicionario = NULL;
+}
+
+void EsqCurto(TipoApontador *Ap, short *Fim) { /* Folha esquerda retirada => arvore curta na altura esquerda */
+    TipoApontador Ap1;
+    if ((*Ap)->BitE == Horizontal) {
+        (*Ap)->BitE = Vertical;
+        *Fim = TRUE;
+        return;
+    }
+    if ((*Ap)->BitD == Horizontal) {
+        Ap1 = (*Ap)->Dir;
+        (*Ap)->Dir = Ap1->Esq;
+        Ap1->Esq = *Ap;
+        *Ap = Ap1;
+        if ((*Ap)->Esq->Dir->BitE == Horizontal) {
+            DE(&(*Ap)->Esq);
+            (*Ap)->BitE = Horizontal;
+        } else if ((*Ap)->Esq->Dir->BitD == Horizontal) {
+            DD(&(*Ap)->Esq);
+            (*Ap)->BitE = Horizontal;
+        }
+        *Fim = TRUE;
+        return;
+    }
+    (*Ap)->BitD = Horizontal;
+    if ((*Ap)->Dir->BitE == Horizontal) {
+        DE(Ap);
+        *Fim = TRUE;
+        return;
+    }
+    if ((*Ap)->Dir->BitD == Horizontal) {
+        DD(Ap);
+        *Fim = TRUE;
+    }
+}
+
+void DirCurto(TipoApontador *Ap, short *Fim) { /* Folha direita retirada => arvore curta na altura direita */
+    TipoApontador Ap1;
+    if ((*Ap)->BitD == Horizontal) {
+        (*Ap)->BitD = Vertical;
+        *Fim = TRUE;
+        return;
+    }
+    if ((*Ap)->BitE == Horizontal) {
+        Ap1 = (*Ap)->Esq;
+        (*Ap)->Esq = Ap1->Dir;
+        Ap1->Dir = *Ap;
+        *Ap = Ap1;
+        if ((*Ap)->Dir->Esq->BitD == Horizontal) {
+            ED(&(*Ap)->Dir);
+            (*Ap)->BitD = Horizontal;
+        } else if ((*Ap)->Dir->Esq->BitE == Horizontal) {
+            EE(&(*Ap)->Dir);
+            (*Ap)->BitD = Horizontal;
+        }
+        *Fim = TRUE;
+        return;
+    }
+    (*Ap)->BitE = Horizontal;
+    if ((*Ap)->Esq->BitD == Horizontal) {
+        ED(Ap);
+        *Fim = TRUE;
+        return;
+    }
+    if ((*Ap)->Esq->BitE == Horizontal) {
+        EE(Ap);
+        *Fim = TRUE;
+    }
+}
+
+void Antecessor(TipoApontador q, TipoApontador *r, short *Fim) {
+    if ((*r)->Dir != NULL) {
+        Antecessor(q, &(*r)->Dir, Fim);
+        if (!*Fim) DirCurto(r, Fim);
+        return;
+    }
+    q->Reg = (*r)->Reg;
+    q = *r;
+    *r = (*r)->Esq;
+    free(q);
+    if (*r != NULL) *Fim = TRUE;
+}
+
+void IRetira(TipoRegistro x, TipoApontador *Ap, short *Fim) {
+    TipoNo *Aux;
+    if (*Ap == NULL) {
+        printf("Chave nao esta na arvore\n");
+        *Fim = TRUE;
+        return;
+    }
+    if (x.Chave < (*Ap)->Reg.Chave) {
+        IRetira(x, &(*Ap)->Esq, Fim);
+        if (!*Fim) EsqCurto(Ap, Fim);
+        return;
+    }
+    if (x.Chave > (*Ap)->Reg.Chave) {
+        IRetira(x, &(*Ap)->Dir, Fim);
+        if (!*Fim) DirCurto(Ap, Fim);
+        return;
+    }
+    *Fim = FALSE;
+    Aux = *Ap;
+    if (Aux->Dir == NULL) {
+        *Ap = Aux->Esq;
+        free(Aux);
+        if (*Ap != NULL) *Fim = TRUE;
+        return;
+    }
+    if (Aux->Esq == NULL) {
+        *Ap = Aux->Dir;
+        free(Aux);
+        if (*Ap != NULL) *Fim = TRUE;
+        return;
+    }
+    Antecessor(Aux, &Aux->Esq, Fim);
+    if (!*Fim) EsqCurto(Ap, Fim); /* Encontrou chave */
+}
+
+void Retira(TipoRegistro x, TipoApontador *Ap) {
+    short Fim;
+    IRetira(x, Ap, &Fim);
+}
+
+void Pesquisa(TipoRegistro *x, TipoApontador *p) {
+    if (*p == NULL) {
+        printf("Erro: Registro nao esta presente na arvore\n");
+        return;
+    }
+    if (x->Chave < (*p)->Reg.Chave) {
+        Pesquisa(x, &(*p)->Esq);
+        return;
+    }
+    if (x->Chave > (*p)->Reg.Chave)
+        Pesquisa(x, &(*p)->Dir);
+    else
+        *x = (*p)->Reg;
+}
+
+void Testa1(TipoApontador p, int nivel, int *NivelFolhas, short *PrimeiraFolha) {
+    if (p == NULL)
+        return;
+    if (*PrimeiraFolha)
+        if (*NivelFolhas < nivel) *NivelFolhas = nivel;
+    if (p->Esq == NULL && p->Dir == NULL) {
+        if (*PrimeiraFolha == TRUE)
+            *PrimeiraFolha = FALSE;
+        else {
+            if (nivel != *NivelFolhas) {
+                printf("Erro: Folhas em niveis diferentes\n");
+                exit(1);
+            }
+        }
+    }
+    if (p->BitE == Horizontal)
+        Testa1(p->Esq, nivel, NivelFolhas, PrimeiraFolha);
+    else
+        Testa1(p->Esq, nivel + 1, NivelFolhas, PrimeiraFolha);
+    if (p->BitD == Horizontal)
+        Testa1(p->Dir, nivel, NivelFolhas, PrimeiraFolha);
+    else
+        Testa1(p->Dir, nivel + 1, NivelFolhas, PrimeiraFolha);
+}
+
+void Testa2(TipoApontador p, int *NivelFolhas, short *PrimeiraFolha) {
+    if (p == NULL)
+        return;
+    if (p->Esq != NULL) {
+        if (p->Reg.Chave < p->Esq->Reg.Chave) {
+//            printf("Erro: %d < que filho a esquerda \n", p->Reg.Chave);
+            exit(1);
+        }
+        Testa2(p->Esq, NivelFolhas, PrimeiraFolha);
+    }
+    if (p->Dir == NULL)
+        return;
+    if (p->Reg.Chave > p->Dir->Reg.Chave) {
+//        printf("Erro: %d > que filho a direita \n", p->Reg.Chave);
+        exit(1);
+    }
+    Testa2(p->Dir, NivelFolhas, PrimeiraFolha);
+}
+
+void Testa(TipoApontador Arvore) {
+    int NivelFolhas = 0;
+    short PrimeiraFolha = TRUE;
+    Testa1(Arvore, 1, &NivelFolhas, &PrimeiraFolha);
+    Testa2(Arvore, &NivelFolhas, &PrimeiraFolha);
 }
 
 double rand0a1() {
-  double resultado=  (double) rand()/ RAND_MAX; /* Dividir pelo maior inteiro */
-  if(resultado>1.0) resultado = 1.0;
-  return resultado;
+    double resultado = (double) rand() / RAND_MAX; /* Dividir pelo maior inteiro */
+    if (resultado > 1.0) resultado = 1.0;
+    return resultado;
 }
 
-void Permut( TipoChave A[], int n) {
-  int i,j; TipoChave b;
-  for(i = n; i>0; i --) 
-    { j = (i * rand0a1());
-      b = A[i];
-      A[i] = A[j];
-      A[j] = b;
+void Permut(int *A, int n) { /* Obtem permutacao randomica dos numeros entre 1 e n */
+    int i, j, b;
+    for (i = n; i >= 1; i--) {
+        j = (int) (i * rand0a1() + 1);
+        b = A[i - 1];
+        A[i - 1] = A[j - 1];
+        A[j - 1] = b;
     }
 }
-
-int Altura(TipoApontador p)
-{
-  int e, d;
-  if (p == NULL)
-    return -1;
-  e = Altura(p->Esq);
-  d = Altura(p->Dir);
-  if (e > d)
-    return e+1;
-  else
-return d+1; }
