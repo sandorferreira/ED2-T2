@@ -7,6 +7,7 @@
 #define FALSE 0
 #define MAX 10
 
+
 void EE(TipoApontador *Ap) {
     TipoApontador Ap1;
     Ap1 = (*Ap)->Esq;
@@ -319,6 +320,27 @@ void Permut(int *A, int n) { /* Obtem permutacao randomica dos numeros entre 1 e
     }
 }
 
+TipoRegistro* criaRegistro (char *Palavra){
+    TipoRegistro *novo = (TipoRegistro*) malloc (sizeof(TipoRegistro));
+    for (int i = 0; i < strlen(Palavra); i++) {
+        novo->Chave[i]=Palavra[i];
+    }
+    novo->repeticao=NULL;
+    return novo;
+}
+
+void imprimeArv (TipoApontador Arvore){
+    if (Arvore->Esq != NULL){
+        imprimeArv(Arvore->Esq);
+    }
+    if (Arvore->Dir != NULL){
+        imprimeArv(Arvore->Dir);
+    }
+    else{
+        puts(Arvore->Reg.Chave);
+    }
+}
+
 TipoApontador criaArvore(FILE* indice) {
     TipoApontador Dicionario;
     char Palavra[256];
@@ -333,9 +355,12 @@ TipoApontador criaArvore(FILE* indice) {
         for (i = 0; i < strlen(Linha)-1; i++) {
             Palavra[i]=Linha[i];
         }
-        puts(Palavra);
+        TipoRegistro *novo= criaRegistro(Palavra);
         memset(Palavra,0,sizeof(Palavra));
+        Insere(*novo,&Dicionario);
     }
+    Testa(Dicionario);
+    imprimeArv(Dicionario);
     return Dicionario;
 }
 //

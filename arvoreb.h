@@ -12,9 +12,8 @@ typedef struct TipoRepeticao TipoRepeticao;
 
 typedef struct TipoRegistro {
     /* outros componentes */
-    TipoChave Chave;
-    int linhas[255];
-    struct TipoRepeticao repeticao;
+    char Chave[250];
+    struct TipoRepeticao *repeticao;
 } TipoRegistro;
 
 typedef enum {
