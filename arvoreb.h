@@ -47,5 +47,11 @@ void Testa2(TipoApontador p, int *NivelFolhas, short *PrimeiraFolha);
 void Testa(TipoApontador Arvore);
 double rand0a1();
 void Permut(int *A, int n);
+TipoRegistro* criaRegistro (char *Palavra);
+void imprimeArv2 (TipoApontador Arvore);
+void imprimeArv (TipoApontador Arvore);
+void criaRepeticao (int nLinha, TipoApontador Arvore);
+short adicionaLinhaArv(char *Palavra, int nLinha, TipoApontador Arvore);
+TipoApontador criaArvore(FILE* indice);
 
 #endif

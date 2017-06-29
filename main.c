@@ -15,7 +15,7 @@ int palavrasIndice;
 FILE *ArqTxt, *ArqAlf, *ArqPalavras, *ArqTeste;
 TipoAlfabeto Alfabeto;
 char Palavra[256];
-char Linha[256];
+char Linha[1250];
 int i;
 short aux;
 
@@ -40,21 +40,28 @@ int main(int argc, char *argv[]) {
     ArqPalavras = fopen("Palavras_Chave.txt", "r");
     ArqTeste = fopen("saida.txt", "w"); //O TRABALHO TEM Q ATUALIZAR O INDICE, MAS PARA N TER Q VOLTAR A CADA TESTE....
     DefineAlfabeto(Alfabeto);
-    TipoApontador teste = criaArvore(ArqPalavras);
+    TipoApontador arvore = criaArvore(ArqPalavras);
+    int nLinha =0;
     aux = FALSE;
-    while (fgets(Linha, 256, ArqTxt) != NULL) { //ENQUANTO PEGAR LINHA DO LISTA
+    short teste = FALSE;
+    while (fgets(Linha, 1250, ArqTxt) != NULL) { //ENQUANTO PEGAR LINHA DO LISTA
+        nLinha++;
+        printf("%d//%s",nLinha,Linha);
         for (i = 1; i <= strlen(Linha); i++) {
             if (Alfabeto[Linha[i - 1] + 127]) {
                 sprintf(Palavra + strlen(Palavra), "%c", Linha[i - 1]);
                 aux = TRUE;
-            } else
+            } else {
                 if (aux) {
-//                puts(Palavra);
-                *Palavra = '\0';
-                aux = FALSE;
+//                    puts(Palavra);
+                    teste = adicionaLinhaArv(Palavra,nLinha, arvore);
+                    *Palavra = '\0';
+                    aux = FALSE;
+                }
             }
         }
     }
+    imprimeArv(arvore);
     if (aux) {
         puts(Palavra);
         *Palavra = '\0';

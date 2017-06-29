@@ -329,6 +329,18 @@ TipoRegistro* criaRegistro (char *Palavra){
     return novo;
 }
 
+void imprimeArv2 (TipoApontador Arvore){
+    printf("A palavra '%s' repetiu nas linhas ", Arvore->Reg.Chave);
+    if (Arvore->Reg.repeticao != NULL){
+        TipoRepeticao *aux = Arvore->Reg.repeticao;
+        while (aux != NULL){
+            printf ("%d, ",aux->linha);
+            aux = aux->proximo;
+        }
+        printf("\n");
+    }
+}
+
 void imprimeArv (TipoApontador Arvore){
     if (Arvore->Esq != NULL){
         imprimeArv(Arvore->Esq);
@@ -336,8 +348,43 @@ void imprimeArv (TipoApontador Arvore){
     if (Arvore->Dir != NULL){
         imprimeArv(Arvore->Dir);
     }
+    imprimeArv2 (Arvore);
+}
+
+void criaRepeticao (int nLinha, TipoApontador Arvore){
+    TipoRepeticao *novo = (TipoRepeticao*) malloc (sizeof(TipoRepeticao));
+    novo->linha = nLinha;
+    novo->proximo = NULL;
+    TipoRepeticao *aux = Arvore->Reg.repeticao;
+    if (aux != NULL){
+        while (aux->proximo != NULL){
+            aux = aux->proximo;
+        }
+        aux->proximo = novo;
+    }
     else{
-        puts(Arvore->Reg.Chave);
+        Arvore->Reg.repeticao = novo;
+    }
+}
+
+short adicionaLinhaArv(char *Palavra, int nLinha, TipoApontador Arvore){
+    short achou = FALSE;
+    if (strcmp(Arvore->Reg.Chave,Palavra) == 0){
+        criaRepeticao(nLinha,Arvore);
+        return TRUE;
+    }
+    if (Arvore->Esq != NULL){
+        achou = adicionaLinhaArv(Palavra, nLinha, Arvore->Esq);
+        if (achou == TRUE){
+            return achou;
+        }
+    }
+    
+    if (Arvore->Dir != NULL){
+        achou = adicionaLinhaArv(Palavra, nLinha, Arvore->Dir);
+        if (achou == TRUE){
+            return achou;
+        }
     }
 }
 
@@ -346,11 +393,9 @@ TipoApontador criaArvore(FILE* indice) {
     char Palavra[256];
     char Linha[256];
     TipoRegistro x;
-    int vetor[MAX];
     int i, j, k, n, aux=0;
     Inicializa(&Dicionario);
 
-    /* Insere cada chave na arvore e testa sua integridade apos cada insercao */
     while (fgets(Linha, 256, indice) != NULL) {
         for (i = 0; i < strlen(Linha)-1; i++) {
             Palavra[i]=Linha[i];
@@ -360,35 +405,6 @@ TipoApontador criaArvore(FILE* indice) {
         Insere(*novo,&Dicionario);
     }
     Testa(Dicionario);
-    imprimeArv(Dicionario);
+//    imprimeArv(Dicionario);
     return Dicionario;
 }
-//
-//    /* Retira uma chave aleatoriamente e realiza varias pesquisas */
-//    for (i = 1; i <= MAX; i++) {
-//        k = 1 + (int) ((float) MAX * rand() / (RAND_MAX + 1.0));
-//        n = vetor[k - 1];
-//        x.Chave = n;
-//        Retira(x, &Dicionario);
-//        Testa(Dicionario);
-//        printf("Retirou chave: %d\n", x.Chave);
-//        for (j = 1; j <= MAX; j++) {
-//            x.Chave = vetor[(int) ((float) MAX * rand() / (RAND_MAX + 1.0))];
-//            if (x.Chave != n) {
-//                printf("Pesquisando chave: %d\n", x.Chave);
-//                Pesquisa(&x, &Dicionario);
-//            }
-//        }
-//        x.Chave = n;
-//        Insere(x, &Dicionario);
-//        printf("Inseriu chave: %d\n", x.Chave);
-//        Testa(Dicionario);
-//    }
-//    /* Retira a raiz da arvore ate que ela fique vazia */
-//    for (i = 1; i <= MAX; i++) {
-//        x.Chave = Dicionario->Reg.Chave;
-//        Retira(x, &Dicionario);
-//        Testa(Dicionario);
-//        printf("Retirou chave: %d\n", x.Chave);
-//    }
-//    return 0;
