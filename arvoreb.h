@@ -1,11 +1,20 @@
 #ifndef ARVOREB_H
 #define ARVOREB_H
 
-typedef char *TipoChave;
+typedef char *TipoChave[256];
+
+struct TipoRepeticao{
+    int linha;
+    struct TipoRepeticao *proximo;
+};
+
+typedef struct TipoRepeticao TipoRepeticao;
 
 typedef struct TipoRegistro {
     /* outros componentes */
     TipoChave Chave;
+    int linhas[255];
+    struct TipoRepeticao repeticao;
 } TipoRegistro;
 
 typedef enum {

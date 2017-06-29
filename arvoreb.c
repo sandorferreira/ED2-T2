@@ -1,5 +1,6 @@
 #include <sys/time.h>
 #include<stdlib.h>
+#include<string.h>
 #include<stdio.h>
 #include"arvoreb.h"
 #define TRUE  1
@@ -281,7 +282,7 @@ void Testa2(TipoApontador p, int *NivelFolhas, short *PrimeiraFolha) {
         return;
     if (p->Esq != NULL) {
         if (p->Reg.Chave < p->Esq->Reg.Chave) {
-//            printf("Erro: %d < que filho a esquerda \n", p->Reg.Chave);
+            //            printf("Erro: %d < que filho a esquerda \n", p->Reg.Chave);
             exit(1);
         }
         Testa2(p->Esq, NivelFolhas, PrimeiraFolha);
@@ -289,7 +290,7 @@ void Testa2(TipoApontador p, int *NivelFolhas, short *PrimeiraFolha) {
     if (p->Dir == NULL)
         return;
     if (p->Reg.Chave > p->Dir->Reg.Chave) {
-//        printf("Erro: %d > que filho a direita \n", p->Reg.Chave);
+        //        printf("Erro: %d > que filho a direita \n", p->Reg.Chave);
         exit(1);
     }
     Testa2(p->Dir, NivelFolhas, PrimeiraFolha);
@@ -317,3 +318,52 @@ void Permut(int *A, int n) { /* Obtem permutacao randomica dos numeros entre 1 e
         A[j - 1] = b;
     }
 }
+
+TipoApontador criaArvore(FILE* indice) {
+    TipoApontador Dicionario;
+    char Palavra[256];
+    char Linha[256];
+    TipoRegistro x;
+    int vetor[MAX];
+    int i, j, k, n, aux=0;
+    Inicializa(&Dicionario);
+
+    /* Insere cada chave na arvore e testa sua integridade apos cada insercao */
+    while (fgets(Linha, 256, indice) != NULL) {
+        for (i = 0; i < strlen(Linha)-1; i++) {
+            Palavra[i]=Linha[i];
+        }
+        puts(Palavra);
+        memset(Palavra,0,sizeof(Palavra));
+    }
+    return Dicionario;
+}
+//
+//    /* Retira uma chave aleatoriamente e realiza varias pesquisas */
+//    for (i = 1; i <= MAX; i++) {
+//        k = 1 + (int) ((float) MAX * rand() / (RAND_MAX + 1.0));
+//        n = vetor[k - 1];
+//        x.Chave = n;
+//        Retira(x, &Dicionario);
+//        Testa(Dicionario);
+//        printf("Retirou chave: %d\n", x.Chave);
+//        for (j = 1; j <= MAX; j++) {
+//            x.Chave = vetor[(int) ((float) MAX * rand() / (RAND_MAX + 1.0))];
+//            if (x.Chave != n) {
+//                printf("Pesquisando chave: %d\n", x.Chave);
+//                Pesquisa(&x, &Dicionario);
+//            }
+//        }
+//        x.Chave = n;
+//        Insere(x, &Dicionario);
+//        printf("Inseriu chave: %d\n", x.Chave);
+//        Testa(Dicionario);
+//    }
+//    /* Retira a raiz da arvore ate que ela fique vazia */
+//    for (i = 1; i <= MAX; i++) {
+//        x.Chave = Dicionario->Reg.Chave;
+//        Retira(x, &Dicionario);
+//        Testa(Dicionario);
+//        printf("Retirou chave: %d\n", x.Chave);
+//    }
+//    return 0;

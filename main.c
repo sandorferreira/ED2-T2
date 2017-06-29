@@ -6,11 +6,13 @@ comando */
 #include <string.h>
 #include <stdlib.h>
 #include <stdio.h>
+#include "arvoreb.h"
 #define MAXALFABETO 255
 #define TRUE 1
 #define FALSE 0
 typedef short TipoAlfabeto[MAXALFABETO + 1];
-FILE *ArqTxt, *ArqAlf;
+int palavrasIndice;
+FILE *ArqTxt, *ArqAlf, *ArqPalavras, *ArqTeste;
 TipoAlfabeto Alfabeto;
 char Palavra[256];
 char Linha[256];
@@ -35,7 +37,10 @@ void DefineAlfabeto(short *Alfabeto) {
 int main(int argc, char *argv[]) {
     ArqTxt = fopen("Texto.txt", "r");
     ArqAlf = fopen("Alfabeto.txt", "r");
+    ArqPalavras = fopen("Palavras_Chave.txt", "r");
+    ArqTeste = fopen("saida.txt", "w"); //O TRABALHO TEM Q ATUALIZAR O INDICE, MAS PARA N TER Q VOLTAR A CADA TESTE....
     DefineAlfabeto(Alfabeto);
+    TipoApontador teste = criaArvore(ArqPalavras);
     aux = FALSE;
     while (fgets(Linha, 256, ArqTxt) != NULL) { //ENQUANTO PEGAR LINHA DO LISTA
         for (i = 1; i <= strlen(Linha); i++) {
@@ -44,7 +49,7 @@ int main(int argc, char *argv[]) {
                 aux = TRUE;
             } else
                 if (aux) {
-                puts(Palavra);
+//                puts(Palavra);
                 *Palavra = '\0';
                 aux = FALSE;
             }
