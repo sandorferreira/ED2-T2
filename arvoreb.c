@@ -325,38 +325,56 @@ TipoRegistro* criaRegistro(char *Palavra, int pos) {
         novo->Chave[i] = Palavra[i];
     }
     novo->pos = pos;
-    printf ("%d %s\n",novo->pos, novo->Chave);
     novo->repeticao = NULL;
     return novo;
 }
 
-void imprimeArv2(TipoApontadorArv Arvore) {
-    printf("A palavra '%s' repetiu nas linhas ", Arvore->Reg.Chave);
+void imprimeArv2(TipoApontadorArv Arvore, FILE* ArqSaida) {
+    fprintf(ArqSaida, "%s", Arvore->Reg.Chave);
     if (Arvore->Reg.repeticao != NULL) {
         TipoRepeticao *aux = Arvore->Reg.repeticao;
         while (aux != NULL) {
-            printf("%d, ", aux->linha);
+            fprintf(ArqSaida, " %d", aux->linha);
             aux = aux->proximo;
         }
-        printf("\n");
+        fprintf(ArqSaida, "\n");
     }
 }
 
-short imprimeArv(TipoApontadorArv Arvore, int pos) {
+short imprimeArv(TipoApontadorArv Arvore, int pos, FILE* ArqSaida) {
     short aux = 0;
     if (Arvore->Reg.pos == pos && aux == 0) {
-        imprimeArv2(Arvore);
+        imprimeArv2(Arvore, ArqSaida);
         aux = 1;
         return aux;
     } else {
         if (Arvore->Esq != NULL) {
-            aux = imprimeArv(Arvore->Esq, pos);
-            if (aux == 1){
-                return;
+            aux = imprimeArv(Arvore->Esq, pos, ArqSaida);
+            if (aux == 1) {
+                return aux;
             }
         }
         if (Arvore->Dir != NULL) {
-            aux = imprimeArv(Arvore->Dir, pos);
+            aux = imprimeArv(Arvore->Dir, pos, ArqSaida);
+        }
+        return aux;
+    }
+}
+
+TipoRegistro* pesquisaArv(TipoApontadorArv Arvore, char* palavra) {
+    TipoRegistro* aux = NULL;
+    if ((strcmp(Arvore->Reg.Chave,palavra) == 0) && aux == 0) {
+        aux = &Arvore->Reg;
+        return aux;
+    } else {
+        if (Arvore->Esq != NULL) {
+            aux = pesquisaArv(Arvore->Esq, palavra);
+            if (aux != NULL) {
+                return aux;
+            }
+        }
+        if (Arvore->Dir != NULL) {
+            aux = pesquisaArv(Arvore->Dir, palavra);
         }
         return aux;
     }
@@ -375,7 +393,6 @@ void criaRepeticaoArv(int nLinha, TipoApontadorArv Arvore) {
             return;
         } else {
             aux->proximo = novo;
-
         }
     } else {
         Arvore->Reg.repeticao = novo;

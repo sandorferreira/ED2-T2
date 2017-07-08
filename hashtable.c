@@ -99,10 +99,9 @@ void adicionaLinhaHash(TipoDicionario T, int pos, int nLinha) {
         while (aux->proximo != NULL) {
             aux = aux->proximo;
         }
-        if (aux->linha == nLinha){
+        if (aux->linha == nLinha) {
             return;
-        }
-        else{
+        } else {
             aux->proximo = novo;
             return;
         }
@@ -118,29 +117,15 @@ void RetiraHash(TipoChaveHash Ch, TipoPesos p, TipoDicionario T) {
     } else printf("Registro nao esta presente\n");
 }
 
-void ImprimeHash(TipoDicionario tabela) {
-    int i, j, tam;
-    for (i = 0; i < M; i++) {
-        printf("%d  ", i);
-        if (tabela[i] != NULL) {
-            tam = strlen(tabela[i]->Chave);
-            for (j = 0; j < tam; j++)
-                putchar(tabela[i]->Chave[j]);
-            imprimeLinhas(tabela, i);
-            putchar('\n');
-        }
-    }
-} /* Imprime */
-
-void ImprimeHash2(TipoDicionario tabela) {
+void ImprimeHash(TipoDicionario tabela, FILE* ArqSaida) {
     int i, j, tam;
     int pos = 1;
     for (i = 0; i < M; i++) {
         if (tabela[i] != NULL && tabela[i]->pos == pos) {
             tam = strlen(tabela[i]->Chave);
             for (j = 0; j < tam; j++)
-                putchar(tabela[i]->Chave[j]);
-            imprimeLinhas(tabela, i);
+                putc(tabela[i]->Chave[j], ArqSaida);
+            imprimeLinhas(tabela, i, ArqSaida);
             putchar('\n');
             pos++;
             i = -1;
@@ -148,12 +133,13 @@ void ImprimeHash2(TipoDicionario tabela) {
     }
 } /* Imprime */
 
-void imprimeLinhas(TipoDicionario T, int i) {
+void imprimeLinhas(TipoDicionario T, int i, FILE* ArqSaida) {
     TipoRepeticaoHash* aux = T[i]->repeticao;
     while (aux != NULL) {
-        printf(" %d", aux->linha);
+        fprintf(ArqSaida, " %d", aux->linha);
         aux = aux->proximo;
     }
+    fprintf(ArqSaida, "\n");
 }
 
 void LerPalavraHash(char *p, int Tam) {

@@ -21,6 +21,173 @@ char Linha[1250];
 int i;
 short aux;
 
+void indiceArvore() {
+    TipoApontadorArv arvore = criaArvore(ArqPalavras);
+    int nLinha = 0;
+    aux = FALSE;
+    short teste;
+    while (fgets(Linha, 1250, ArqTxt) != NULL) { //ENQUANTO PEGAR LINHA DO LISTA
+        nLinha++;
+        for (i = 1; i <= strlen(Linha); i++) {
+            if (Alfabeto[Linha[i - 1] + 127]) {
+                sprintf(Palavra + strlen(Palavra), "%c", Linha[i - 1]);
+                aux = TRUE;
+            } else {
+                if (aux) {
+                    //                    puts(Palavra);
+                    teste = adicionaLinhaArv(Palavra, nLinha, arvore);
+                    *Palavra = '\0';
+                    aux = FALSE;
+                }
+            }
+        }
+    }
+    int pos = 0;
+    teste = 1;
+    while (teste != 0) {
+        pos++;
+        teste = imprimeArv(arvore, pos, ArqTeste);
+    }
+    if (aux) {
+        puts(Palavra);
+        *Palavra = '\0';
+    }
+    fclose(ArqTxt);
+    fclose(ArqAlf);
+}
+
+void indiceHash() {
+    TipoDicionario hash;
+    criaHash(ArqPalavras, hash);
+    int nLinha = 0;
+    aux = FALSE;
+    short teste = FALSE;
+    while (fgets(Linha, 1250, ArqTxt) != NULL) { //ENQUANTO PEGAR LINHA DO LISTA
+        nLinha++;
+        for (i = 1; i <= strlen(Linha); i++) {
+            if (Alfabeto[Linha[i - 1] + 127]) {
+                sprintf(Palavra + strlen(Palavra), "%c", Linha[i - 1]);
+                aux = TRUE;
+            } else {
+                if (aux) {
+                    checaPalavraHash(hash, Palavra, nLinha);
+                    *Palavra = '\0';
+                    aux = FALSE;
+                }
+            }
+        }
+    }
+    ImprimeHash(hash, ArqTeste);
+    if (aux) {
+        puts(Palavra);
+        *Palavra = '\0';
+    }
+    fclose(ArqTxt);
+    fclose(ArqAlf);
+}
+
+void buscaArvore() {
+    char palavra1[50], palavra2[50];
+    scanf("%s %s", palavra1, palavra2);
+    TipoApontadorArv arvore = criaArvore(ArqPalavras);
+    int nLinha = 0;
+    aux = FALSE;
+    short teste;
+    while (fgets(Linha, 1250, ArqTxt) != NULL) { //ENQUANTO PEGAR LINHA DO LISTA
+        nLinha++;
+        for (i = 1; i <= strlen(Linha); i++) {
+            if (Alfabeto[Linha[i - 1] + 127]) {
+                sprintf(Palavra + strlen(Palavra), "%c", Linha[i - 1]);
+                aux = TRUE;
+            } else {
+                if (aux) {
+                    //                    puts(Palavra);
+                    teste = adicionaLinhaArv(Palavra, nLinha, arvore);
+                    *Palavra = '\0';
+                    aux = FALSE;
+                }
+            }
+        }
+    }
+    TipoRegistro* aux1 = pesquisaArv(arvore, palavra1);
+    TipoRegistro* aux2 = pesquisaArv(arvore, palavra2);
+    imprimeLinhasArv(aux1, aux2);
+    fclose(ArqTxt);
+    fclose(ArqAlf);
+}
+
+void imprimeLinhasArv(TipoRegistro* no1, TipoRegistro* no2) {
+    TipoRepeticao* aux1 = no1->repeticao;
+    TipoRepeticao* aux2 = no2->repeticao;
+    while (aux1 != NULL) {
+        while (aux2 != NULL) {
+            if (aux1->linha == aux2->linha) {
+                rewind(ArqTxt);
+                imprimeLinha(aux1->linha);
+            }
+            aux2 = aux2->proximo;
+        }
+        aux2 = no2->repeticao;
+        aux1 = aux1->proximo;
+    }
+}
+
+void imprimeLinha(int nLinha) {
+    int aux = 0;
+    while (fgets(Linha, 1250, ArqTxt) != NULL) { //ENQUANTO PEGAR LINHA DO LISTA
+        aux++;
+        if (aux == nLinha) {
+            puts(Linha);
+        }
+    }
+}
+
+void buscaHash() {
+    char palavra1[50], palavra2[50];
+    scanf("%s %s", palavra1, palavra2);
+    TipoDicionario hash;
+    criaHash(ArqPalavras, hash);
+    int nLinha = 0;
+    aux = FALSE;
+    short teste;
+    while (fgets(Linha, 1250, ArqTxt) != NULL) { //ENQUANTO PEGAR LINHA DO LISTA
+        nLinha++;
+        for (i = 1; i <= strlen(Linha); i++) {
+            if (Alfabeto[Linha[i - 1] + 127]) {
+                sprintf(Palavra + strlen(Palavra), "%c", Linha[i - 1]);
+                aux = TRUE;
+            } else {
+                if (aux) {
+                    checaPalavraHash(hash, Palavra, nLinha);
+                    *Palavra = '\0';
+                    aux = FALSE;
+                }
+            }
+        }
+    }
+    int aux1 = Pesquisa(palavra1, hash);
+    int aux2 = Pesquisa(palavra2, hash);
+    imprimeLinhasHash(hash[aux1]->repeticao, hash[aux2]->repeticao);
+    fclose(ArqTxt);
+    fclose(ArqAlf);
+}
+
+void imprimeLinhasHash (TipoRepeticaoHash* aux1, TipoRepeticaoHash* aux2){
+    TipoRepeticaoHash* item1 = aux1;
+    TipoRepeticaoHash* item2 = aux2;
+    while (item1 != NULL){
+        while (item2 != NULL){
+            if (item1->linha == item2->linha){
+                rewind(ArqTxt);
+                imprimeLinha(item1->linha);
+            }
+            item2 = item2->proximo;
+        }
+        item2 = aux2;
+        item1 = item1->proximo;
+    }
+}
+
 void DefineAlfabeto(short *Alfabeto) {
     char Simbolos[MAXALFABETO + 1];
     int i, CompSimbolos;
@@ -45,79 +212,17 @@ int main(int argc, char *argv[]) {
     int hashOuArv;
     scanf("%d", &hashOuArv);
     if (hashOuArv == 1) {
-        buscaArvore();
+        indiceArvore();
     }
     if (hashOuArv == 2) {
+        indiceHash();
+    }
+    if (hashOuArv == 3) {
+        buscaArvore();
+    }
+    if (hashOuArv == 4) {
         buscaHash();
     }
     return 0;
-}
-
-void buscaArvore() {
-    TipoApontadorArv arvore = criaArvore(ArqPalavras);
-    int nLinha = 0;
-    aux = FALSE;
-    short teste;
-    while (fgets(Linha, 1250, ArqTxt) != NULL) { //ENQUANTO PEGAR LINHA DO LISTA
-        nLinha++;
-        for (i = 1; i <= strlen(Linha); i++) {
-            if (Alfabeto[Linha[i - 1] + 127]) {
-                sprintf(Palavra + strlen(Palavra), "%c", Linha[i - 1]);
-                aux = TRUE;
-            } else {
-                if (aux) {
-                    //                    puts(Palavra);
-                    teste = adicionaLinhaArv(Palavra, nLinha, arvore);
-                    *Palavra = '\0';
-                    aux = FALSE;
-                }
-            }
-        }
-    }
-    int pos=0;
-    teste = 1;
-    while (teste != 0) {
-        pos++;
-        teste = imprimeArv(arvore, pos);
-    }
-    if (aux) {
-        puts(Palavra);
-        *Palavra = '\0';
-    }
-    fclose(ArqTxt);
-    fclose(ArqAlf);
-}
-
-void buscaHash() {
-    TipoDicionario hash;
-    criaHash(ArqPalavras, hash);
-
-    int nLinha = 0;
-    aux = FALSE;
-    short teste = FALSE;
-    while (fgets(Linha, 1250, ArqTxt) != NULL) { //ENQUANTO PEGAR LINHA DO LISTA
-        nLinha++;
-        printf("%d//%s", nLinha, Linha);
-        for (i = 1; i <= strlen(Linha); i++) {
-            if (Alfabeto[Linha[i - 1] + 127]) {
-                sprintf(Palavra + strlen(Palavra), "%c", Linha[i - 1]);
-                aux = TRUE;
-            } else {
-                if (aux) {
-                    //                    puts(Palavra);
-                    checaPalavraHash(hash, Palavra, nLinha);
-                    *Palavra = '\0';
-                    aux = FALSE;
-                }
-            }
-        }
-    }
-    ImprimeHash2(hash);
-    if (aux) {
-        puts(Palavra);
-        *Palavra = '\0';
-    }
-    fclose(ArqTxt);
-    fclose(ArqAlf);
 }
 /* End. */
