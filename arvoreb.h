@@ -1,5 +1,8 @@
 #ifndef ARVOREB_H
 #define ARVOREB_H
+#include <stdlib.h>
+#include <stdio.h>
+#include <string.h>
 
 typedef char *TipoChave[256];
 
@@ -19,39 +22,39 @@ typedef struct TipoRegistro {
 typedef enum {
     Vertical, Horizontal
 } TipoInclinacao;
-typedef struct TipoNo* TipoApontador;
+typedef struct TipoNo* TipoApontadorArv;
 
 typedef struct TipoNo {
     TipoRegistro Reg;
-    TipoApontador Esq, Dir;
+    TipoApontadorArv Esq, Dir;
     TipoInclinacao BitE, BitD;
 } TipoNo;
 
 // funcoes
-void EE(TipoApontador *Ap);
-void ED(TipoApontador *Ap);
-void DD(TipoApontador *Ap);
-void DE(TipoApontador *Ap);
-void IInsere(TipoRegistro x, TipoApontador *Ap,
+void EE(TipoApontadorArv *Ap);
+void ED(TipoApontadorArv *Ap);
+void DD(TipoApontadorArv *Ap);
+void DE(TipoApontadorArv *Ap);
+void IInsere(TipoRegistro x, TipoApontadorArv *Ap,
         TipoInclinacao *IAp, short *Fim);
-void Insere(TipoRegistro x, TipoApontador *Ap);
-void Inicializa(TipoApontador *Dicionario);
-void EsqCurto(TipoApontador *Ap, short *Fim);
-void DirCurto(TipoApontador *Ap, short *Fim);
-void Antecessor(TipoApontador q, TipoApontador *r, short *Fim);
-void IRetira(TipoRegistro x, TipoApontador *Ap, short *Fim);
-void Retira(TipoRegistro x, TipoApontador *Ap);
-void Pesquisa(TipoRegistro *x, TipoApontador *p);
-void Testa1(TipoApontador p, int nivel, int *NivelFolhas, short *PrimeiraFolha);
-void Testa2(TipoApontador p, int *NivelFolhas, short *PrimeiraFolha);
-void Testa(TipoApontador Arvore);
+void InsereArv(TipoRegistro x, TipoApontadorArv *Ap);
+void Inicializa(TipoApontadorArv *Dicionario);
+void EsqCurto(TipoApontadorArv *Ap, short *Fim);
+void DirCurto(TipoApontadorArv *Ap, short *Fim);
+void Antecessor(TipoApontadorArv q, TipoApontadorArv *r, short *Fim);
+void IRetira(TipoRegistro x, TipoApontadorArv *Ap, short *Fim);
+void Retira(TipoRegistro x, TipoApontadorArv *Ap);
+void PesquisaArv(TipoRegistro *x, TipoApontadorArv *p);
+void Testa1(TipoApontadorArv p, int nivel, int *NivelFolhas, short *PrimeiraFolha);
+void Testa2(TipoApontadorArv p, int *NivelFolhas, short *PrimeiraFolha);
+void Testa(TipoApontadorArv Arvore);
 double rand0a1();
 void Permut(int *A, int n);
 TipoRegistro* criaRegistro (char *Palavra);
-void imprimeArv2 (TipoApontador Arvore);
-void imprimeArv (TipoApontador Arvore);
-void criaRepeticao (int nLinha, TipoApontador Arvore);
-short adicionaLinhaArv(char *Palavra, int nLinha, TipoApontador Arvore);
-TipoApontador criaArvore(FILE* indice);
+void imprimeArv2 (TipoApontadorArv Arvore);
+void imprimeArv (TipoApontadorArv Arvore);
+void criaRepeticaoArv (int nLinha, TipoApontadorArv Arvore);
+short adicionaLinhaArv(char *Palavra, int nLinha, TipoApontadorArv Arvore);
+TipoApontadorArv criaArvore(FILE* indice);
 
 #endif

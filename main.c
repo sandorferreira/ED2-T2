@@ -7,6 +7,8 @@ comando */
 #include <stdlib.h>
 #include <stdio.h>
 #include "arvoreb.h"
+#include "hashtable.h"
+
 #define MAXALFABETO 255
 #define TRUE 1
 #define FALSE 0
@@ -40,28 +42,33 @@ int main(int argc, char *argv[]) {
     ArqPalavras = fopen("Palavras_Chave.txt", "r");
     ArqTeste = fopen("saida.txt", "w"); //O TRABALHO TEM Q ATUALIZAR O INDICE, MAS PARA N TER Q VOLTAR A CADA TESTE....
     DefineAlfabeto(Alfabeto);
-    TipoApontador arvore = criaArvore(ArqPalavras);
-    int nLinha =0;
+
+//        TipoApontador arvore = criaArvore(ArqPalavras);
+    TipoDicionario hash;
+    criaHash(ArqPalavras, hash);
+
+    int nLinha = 0;
     aux = FALSE;
     short teste = FALSE;
     while (fgets(Linha, 1250, ArqTxt) != NULL) { //ENQUANTO PEGAR LINHA DO LISTA
         nLinha++;
-        printf("%d//%s",nLinha,Linha);
+        printf("%d//%s", nLinha, Linha);
         for (i = 1; i <= strlen(Linha); i++) {
             if (Alfabeto[Linha[i - 1] + 127]) {
                 sprintf(Palavra + strlen(Palavra), "%c", Linha[i - 1]);
                 aux = TRUE;
             } else {
                 if (aux) {
-//                    puts(Palavra);
-                    teste = adicionaLinhaArv(Palavra,nLinha, arvore);
+                    //                    puts(Palavra);
+//                                        teste = adicionaLinhaArv(Palavra,nLinha, arvore);
+                    checaPalavraHash(hash,Palavra,nLinha);
                     *Palavra = '\0';
                     aux = FALSE;
                 }
             }
         }
     }
-    imprimeArv(arvore);
+    ImprimeHash(hash);
     if (aux) {
         puts(Palavra);
         *Palavra = '\0';

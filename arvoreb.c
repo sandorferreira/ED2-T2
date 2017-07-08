@@ -8,8 +8,8 @@
 #define MAX 10
 
 
-void EE(TipoApontador *Ap) {
-    TipoApontador Ap1;
+void EE(TipoApontadorArv *Ap) {
+    TipoApontadorArv Ap1;
     Ap1 = (*Ap)->Esq;
     (*Ap)->Esq = Ap1->Dir;
     Ap1->Dir = *Ap;
@@ -18,8 +18,8 @@ void EE(TipoApontador *Ap) {
     *Ap = Ap1;
 }
 
-void ED(TipoApontador *Ap) {
-    TipoApontador Ap1, Ap2;
+void ED(TipoApontadorArv *Ap) {
+    TipoApontadorArv Ap1, Ap2;
     Ap1 = (*Ap)->Esq;
     Ap2 = Ap1->Dir;
     Ap1->BitD = Vertical;
@@ -31,8 +31,8 @@ void ED(TipoApontador *Ap) {
     *Ap = Ap2;
 }
 
-void DD(TipoApontador *Ap) {
-    TipoApontador Ap1;
+void DD(TipoApontadorArv *Ap) {
+    TipoApontadorArv Ap1;
     Ap1 = (*Ap)->Dir;
     (*Ap)->Dir = Ap1->Esq;
     Ap1->Esq = *Ap;
@@ -41,8 +41,8 @@ void DD(TipoApontador *Ap) {
     *Ap = Ap1;
 }
 
-void DE(TipoApontador *Ap) {
-    TipoApontador Ap1, Ap2;
+void DE(TipoApontadorArv *Ap) {
+    TipoApontadorArv Ap1, Ap2;
     Ap1 = (*Ap)->Dir;
     Ap2 = Ap1->Esq;
     Ap1->BitE = Vertical;
@@ -54,10 +54,10 @@ void DE(TipoApontador *Ap) {
     *Ap = Ap2;
 }
 
-void IInsere(TipoRegistro x, TipoApontador *Ap,
+void IInsere(TipoRegistro x, TipoApontadorArv *Ap,
         TipoInclinacao *IAp, short *Fim) {
     if (*Ap == NULL) {
-        *Ap = (TipoApontador) malloc(sizeof (TipoNo));
+        *Ap = (TipoApontadorArv) malloc(sizeof (TipoNo));
         *IAp = Horizontal;
         (*Ap)->Reg = x;
         (*Ap)->BitE = Vertical;
@@ -107,18 +107,18 @@ void IInsere(TipoRegistro x, TipoApontador *Ap,
     }
 }
 
-void Insere(TipoRegistro x, TipoApontador *Ap) {
+void InsereArv(TipoRegistro x, TipoApontadorArv *Ap) {
     short Fim;
     TipoInclinacao IAp;
     IInsere(x, Ap, &IAp, &Fim);
 }
 
-void Inicializa(TipoApontador *Dicionario) {
+void Inicializa(TipoApontadorArv *Dicionario) {
     *Dicionario = NULL;
 }
 
-void EsqCurto(TipoApontador *Ap, short *Fim) { /* Folha esquerda retirada => arvore curta na altura esquerda */
-    TipoApontador Ap1;
+void EsqCurto(TipoApontadorArv *Ap, short *Fim) { /* Folha esquerda retirada => arvore curta na altura esquerda */
+    TipoApontadorArv Ap1;
     if ((*Ap)->BitE == Horizontal) {
         (*Ap)->BitE = Vertical;
         *Fim = TRUE;
@@ -151,8 +151,8 @@ void EsqCurto(TipoApontador *Ap, short *Fim) { /* Folha esquerda retirada => arv
     }
 }
 
-void DirCurto(TipoApontador *Ap, short *Fim) { /* Folha direita retirada => arvore curta na altura direita */
-    TipoApontador Ap1;
+void DirCurto(TipoApontadorArv *Ap, short *Fim) { /* Folha direita retirada => arvore curta na altura direita */
+    TipoApontadorArv Ap1;
     if ((*Ap)->BitD == Horizontal) {
         (*Ap)->BitD = Vertical;
         *Fim = TRUE;
@@ -185,7 +185,7 @@ void DirCurto(TipoApontador *Ap, short *Fim) { /* Folha direita retirada => arvo
     }
 }
 
-void Antecessor(TipoApontador q, TipoApontador *r, short *Fim) {
+void Antecessor(TipoApontadorArv q, TipoApontadorArv *r, short *Fim) {
     if ((*r)->Dir != NULL) {
         Antecessor(q, &(*r)->Dir, Fim);
         if (!*Fim) DirCurto(r, Fim);
@@ -198,7 +198,7 @@ void Antecessor(TipoApontador q, TipoApontador *r, short *Fim) {
     if (*r != NULL) *Fim = TRUE;
 }
 
-void IRetira(TipoRegistro x, TipoApontador *Ap, short *Fim) {
+void IRetira(TipoRegistro x, TipoApontadorArv *Ap, short *Fim) {
     TipoNo *Aux;
     if (*Ap == NULL) {
         printf("Chave nao esta na arvore\n");
@@ -233,27 +233,27 @@ void IRetira(TipoRegistro x, TipoApontador *Ap, short *Fim) {
     if (!*Fim) EsqCurto(Ap, Fim); /* Encontrou chave */
 }
 
-void Retira(TipoRegistro x, TipoApontador *Ap) {
+void Retira(TipoRegistro x, TipoApontadorArv *Ap) {
     short Fim;
     IRetira(x, Ap, &Fim);
 }
 
-void Pesquisa(TipoRegistro *x, TipoApontador *p) {
+void PesquisaArv(TipoRegistro *x, TipoApontadorArv *p) {
     if (*p == NULL) {
         printf("Erro: Registro nao esta presente na arvore\n");
         return;
     }
     if (x->Chave < (*p)->Reg.Chave) {
-        Pesquisa(x, &(*p)->Esq);
+        PesquisaArv(x, &(*p)->Esq);
         return;
     }
     if (x->Chave > (*p)->Reg.Chave)
-        Pesquisa(x, &(*p)->Dir);
+        PesquisaArv(x, &(*p)->Dir);
     else
         *x = (*p)->Reg;
 }
 
-void Testa1(TipoApontador p, int nivel, int *NivelFolhas, short *PrimeiraFolha) {
+void Testa1(TipoApontadorArv p, int nivel, int *NivelFolhas, short *PrimeiraFolha) {
     if (p == NULL)
         return;
     if (*PrimeiraFolha)
@@ -278,7 +278,7 @@ void Testa1(TipoApontador p, int nivel, int *NivelFolhas, short *PrimeiraFolha) 
         Testa1(p->Dir, nivel + 1, NivelFolhas, PrimeiraFolha);
 }
 
-void Testa2(TipoApontador p, int *NivelFolhas, short *PrimeiraFolha) {
+void Testa2(TipoApontadorArv p, int *NivelFolhas, short *PrimeiraFolha) {
     if (p == NULL)
         return;
     if (p->Esq != NULL) {
@@ -297,7 +297,7 @@ void Testa2(TipoApontador p, int *NivelFolhas, short *PrimeiraFolha) {
     Testa2(p->Dir, NivelFolhas, PrimeiraFolha);
 }
 
-void Testa(TipoApontador Arvore) {
+void Testa(TipoApontadorArv Arvore) {
     int NivelFolhas = 0;
     short PrimeiraFolha = TRUE;
     Testa1(Arvore, 1, &NivelFolhas, &PrimeiraFolha);
@@ -329,7 +329,7 @@ TipoRegistro* criaRegistro (char *Palavra){
     return novo;
 }
 
-void imprimeArv2 (TipoApontador Arvore){
+void imprimeArv2 (TipoApontadorArv Arvore){
     printf("A palavra '%s' repetiu nas linhas ", Arvore->Reg.Chave);
     if (Arvore->Reg.repeticao != NULL){
         TipoRepeticao *aux = Arvore->Reg.repeticao;
@@ -341,7 +341,7 @@ void imprimeArv2 (TipoApontador Arvore){
     }
 }
 
-void imprimeArv (TipoApontador Arvore){
+void imprimeArv (TipoApontadorArv Arvore){
     if (Arvore->Esq != NULL){
         imprimeArv(Arvore->Esq);
     }
@@ -351,7 +351,7 @@ void imprimeArv (TipoApontador Arvore){
     imprimeArv2 (Arvore);
 }
 
-void criaRepeticao (int nLinha, TipoApontador Arvore){
+void criaRepeticaoArv (int nLinha, TipoApontadorArv Arvore){
     TipoRepeticao *novo = (TipoRepeticao*) malloc (sizeof(TipoRepeticao));
     novo->linha = nLinha;
     novo->proximo = NULL;
@@ -367,10 +367,10 @@ void criaRepeticao (int nLinha, TipoApontador Arvore){
     }
 }
 
-short adicionaLinhaArv(char *Palavra, int nLinha, TipoApontador Arvore){
+short adicionaLinhaArv(char *Palavra, int nLinha, TipoApontadorArv Arvore){
     short achou = FALSE;
     if (strcmp(Arvore->Reg.Chave,Palavra) == 0){
-        criaRepeticao(nLinha,Arvore);
+        criaRepeticaoArv(nLinha,Arvore);
         return TRUE;
     }
     if (Arvore->Esq != NULL){
@@ -388,8 +388,8 @@ short adicionaLinhaArv(char *Palavra, int nLinha, TipoApontador Arvore){
     }
 }
 
-TipoApontador criaArvore(FILE* indice) {
-    TipoApontador Dicionario;
+TipoApontadorArv criaArvore(FILE* indice) {
+    TipoApontadorArv Dicionario;
     char Palavra[256];
     char Linha[256];
     TipoRegistro x;
@@ -402,7 +402,7 @@ TipoApontador criaArvore(FILE* indice) {
         }
         TipoRegistro *novo= criaRegistro(Palavra);
         memset(Palavra,0,sizeof(Palavra));
-        Insere(*novo,&Dicionario);
+        InsereArv(*novo,&Dicionario);
     }
     Testa(Dicionario);
 //    imprimeArv(Dicionario);
