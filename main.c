@@ -42,8 +42,53 @@ int main(int argc, char *argv[]) {
     ArqPalavras = fopen("Palavras_Chave.txt", "r");
     ArqTeste = fopen("saida.txt", "w"); //O TRABALHO TEM Q ATUALIZAR O INDICE, MAS PARA N TER Q VOLTAR A CADA TESTE....
     DefineAlfabeto(Alfabeto);
+    int hashOuArv;
+    scanf("%d", &hashOuArv);
+    if (hashOuArv == 1) {
+        buscaArvore();
+    }
+    if (hashOuArv == 2) {
+        buscaHash();
+    }
+    return 0;
+}
 
-//        TipoApontador arvore = criaArvore(ArqPalavras);
+void buscaArvore() {
+    TipoApontadorArv arvore = criaArvore(ArqPalavras);
+    int nLinha = 0;
+    aux = FALSE;
+    short teste;
+    while (fgets(Linha, 1250, ArqTxt) != NULL) { //ENQUANTO PEGAR LINHA DO LISTA
+        nLinha++;
+        for (i = 1; i <= strlen(Linha); i++) {
+            if (Alfabeto[Linha[i - 1] + 127]) {
+                sprintf(Palavra + strlen(Palavra), "%c", Linha[i - 1]);
+                aux = TRUE;
+            } else {
+                if (aux) {
+                    //                    puts(Palavra);
+                    teste = adicionaLinhaArv(Palavra, nLinha, arvore);
+                    *Palavra = '\0';
+                    aux = FALSE;
+                }
+            }
+        }
+    }
+    int pos=0;
+    teste = 1;
+    while (teste != 0) {
+        pos++;
+        teste = imprimeArv(arvore, pos);
+    }
+    if (aux) {
+        puts(Palavra);
+        *Palavra = '\0';
+    }
+    fclose(ArqTxt);
+    fclose(ArqAlf);
+}
+
+void buscaHash() {
     TipoDicionario hash;
     criaHash(ArqPalavras, hash);
 
@@ -60,21 +105,19 @@ int main(int argc, char *argv[]) {
             } else {
                 if (aux) {
                     //                    puts(Palavra);
-//                                        teste = adicionaLinhaArv(Palavra,nLinha, arvore);
-                    checaPalavraHash(hash,Palavra,nLinha);
+                    checaPalavraHash(hash, Palavra, nLinha);
                     *Palavra = '\0';
                     aux = FALSE;
                 }
             }
         }
     }
-    ImprimeHash(hash);
+    ImprimeHash2(hash);
     if (aux) {
         puts(Palavra);
         *Palavra = '\0';
     }
     fclose(ArqTxt);
     fclose(ArqAlf);
-    return 0;
 }
 /* End. */

@@ -35,12 +35,14 @@ void InicializaHash(TipoDicionario T) {
 
 void criaHash(FILE* indice, TipoDicionario T) {
     InicializaHash(T);
+    int pos = 0;
     char Palavra[256], Linha[256];
     while (fgets(Linha, 256, indice) != NULL) {
+        pos++;
         for (i = 0; i < strlen(Linha) - 1; i++) {
             Palavra[i] = Linha[i];
         }
-        InsereHash(Palavra, T);
+        InsereHash(Palavra, T, pos);
         memset(Palavra, 0, sizeof (Palavra));
     }
 }
@@ -61,22 +63,23 @@ TipoApontadorHash Pesquisa(TipoChaveHash Ch, TipoDicionario T) {
     }
 }
 
-void InsereHash(TipoChaveHash x, TipoDicionario T) {
+void InsereHash(TipoChaveHash x, TipoDicionario T, int pos) {
     unsigned int i = 0;
     unsigned int Inicial;
     Inicial = h(x);
     while (T[(Inicial + i) % M] != NULL && (i < M))
         i++;
     if (i < M) {
-        novaPalavraHash(x, T, (Inicial + i) % M);
+        novaPalavraHash(x, T, (Inicial + i) % M, pos);
     } else printf("Está cheio?!\n");
 }
 
-void novaPalavraHash(TipoChaveHash Chave, TipoDicionario T, int pos) {
+void novaPalavraHash(TipoChaveHash Chave, TipoDicionario T, int aux, int pos) {
     TipoItem *novo = (TipoItem*) malloc(sizeof (TipoItem));
     strcpy(novo->Chave, Chave);
     novo->repeticao = NULL;
-    T[pos] = novo;
+    novo->pos = pos;
+    T[aux] = novo;
 }
 
 void checaPalavraHash(TipoDicionario T, TipoChaveHash x, int nLinha) {
@@ -96,8 +99,13 @@ void adicionaLinhaHash(TipoDicionario T, int pos, int nLinha) {
         while (aux->proximo != NULL) {
             aux = aux->proximo;
         }
-        aux->proximo = novo;
-        return;
+        if (aux->linha == nLinha){
+            return;
+        }
+        else{
+            aux->proximo = novo;
+            return;
+        }
     } else {
         T[pos]->repeticao = novo;
     }
@@ -120,6 +128,22 @@ void ImprimeHash(TipoDicionario tabela) {
                 putchar(tabela[i]->Chave[j]);
             imprimeLinhas(tabela, i);
             putchar('\n');
+        }
+    }
+} /* Imprime */
+
+void ImprimeHash2(TipoDicionario tabela) {
+    int i, j, tam;
+    int pos = 1;
+    for (i = 0; i < M; i++) {
+        if (tabela[i] != NULL && tabela[i]->pos == pos) {
+            tam = strlen(tabela[i]->Chave);
+            for (j = 0; j < tam; j++)
+                putchar(tabela[i]->Chave[j]);
+            imprimeLinhas(tabela, i);
+            putchar('\n');
+            pos++;
+            i = -1;
         }
     }
 } /* Imprime */

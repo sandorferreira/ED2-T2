@@ -19,6 +19,7 @@ typedef struct TipoRepeticaoHash TipoRepeticaoHash;
 
 typedef struct TipoItem {
     TipoChaveHash Chave;
+    int pos;
     struct TipoRepeticaoHash *repeticao;
     
 } TipoItem;
@@ -34,13 +35,14 @@ TipoIndice h(TipoChaveHash Chave);
 void InicializaHash(TipoDicionario T);
 void criaHash (FILE* indice, TipoDicionario T);
 TipoApontadorHash PesquisaHash(TipoChaveHash Ch, TipoDicionario T);
-void InsereHash(TipoChaveHash x, TipoDicionario T);
-void novaPalavraHash(TipoChaveHash Chave, TipoDicionario T, int pos);
+void InsereHash(TipoChaveHash x, TipoDicionario T, int pos);
+void novaPalavraHash(TipoChaveHash Chave, TipoDicionario T, int aux, int pos);
 void checaPalavraHash(TipoDicionario T, TipoChaveHash x, int nLinha);
 void adicionaLinhaHash(TipoDicionario T, int pos, int nLinha);
 void RetiraHash(TipoChaveHash Ch, TipoPesos p, TipoDicionario T);
 void imprimeLinhas (TipoDicionario T, int i);
 void ImprimeHash(TipoDicionario tabela);
+void ImprimeHash2(TipoDicionario tabela);
 void LerPalavraHash(char *p, int Tam);
 void criaRepeticaoHash(int nLinha, TipoItem Item);
 

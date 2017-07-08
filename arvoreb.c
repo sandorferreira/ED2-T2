@@ -7,7 +7,6 @@
 #define FALSE 0
 #define MAX 10
 
-
 void EE(TipoApontadorArv *Ap) {
     TipoApontadorArv Ap1;
     Ap1 = (*Ap)->Esq;
@@ -320,69 +319,85 @@ void Permut(int *A, int n) { /* Obtem permutacao randomica dos numeros entre 1 e
     }
 }
 
-TipoRegistro* criaRegistro (char *Palavra){
-    TipoRegistro *novo = (TipoRegistro*) malloc (sizeof(TipoRegistro));
+TipoRegistro* criaRegistro(char *Palavra, int pos) {
+    TipoRegistro *novo = (TipoRegistro*) malloc(sizeof (TipoRegistro));
     for (int i = 0; i < strlen(Palavra); i++) {
-        novo->Chave[i]=Palavra[i];
+        novo->Chave[i] = Palavra[i];
     }
-    novo->repeticao=NULL;
+    novo->pos = pos;
+    printf ("%d %s\n",novo->pos, novo->Chave);
+    novo->repeticao = NULL;
     return novo;
 }
 
-void imprimeArv2 (TipoApontadorArv Arvore){
+void imprimeArv2(TipoApontadorArv Arvore) {
     printf("A palavra '%s' repetiu nas linhas ", Arvore->Reg.Chave);
-    if (Arvore->Reg.repeticao != NULL){
+    if (Arvore->Reg.repeticao != NULL) {
         TipoRepeticao *aux = Arvore->Reg.repeticao;
-        while (aux != NULL){
-            printf ("%d, ",aux->linha);
+        while (aux != NULL) {
+            printf("%d, ", aux->linha);
             aux = aux->proximo;
         }
         printf("\n");
     }
 }
 
-void imprimeArv (TipoApontadorArv Arvore){
-    if (Arvore->Esq != NULL){
-        imprimeArv(Arvore->Esq);
+short imprimeArv(TipoApontadorArv Arvore, int pos) {
+    short aux = 0;
+    if (Arvore->Reg.pos == pos && aux == 0) {
+        imprimeArv2(Arvore);
+        aux = 1;
+        return aux;
+    } else {
+        if (Arvore->Esq != NULL) {
+            aux = imprimeArv(Arvore->Esq, pos);
+            if (aux == 1){
+                return;
+            }
+        }
+        if (Arvore->Dir != NULL) {
+            aux = imprimeArv(Arvore->Dir, pos);
+        }
+        return aux;
     }
-    if (Arvore->Dir != NULL){
-        imprimeArv(Arvore->Dir);
-    }
-    imprimeArv2 (Arvore);
 }
 
-void criaRepeticaoArv (int nLinha, TipoApontadorArv Arvore){
-    TipoRepeticao *novo = (TipoRepeticao*) malloc (sizeof(TipoRepeticao));
+void criaRepeticaoArv(int nLinha, TipoApontadorArv Arvore) {
+    TipoRepeticao *novo = (TipoRepeticao*) malloc(sizeof (TipoRepeticao));
     novo->linha = nLinha;
     novo->proximo = NULL;
     TipoRepeticao *aux = Arvore->Reg.repeticao;
-    if (aux != NULL){
-        while (aux->proximo != NULL){
+    if (aux != NULL) {
+        while (aux->proximo != NULL) {
             aux = aux->proximo;
         }
-        aux->proximo = novo;
-    }
-    else{
+        if (aux->linha == nLinha) {
+            return;
+        } else {
+            aux->proximo = novo;
+
+        }
+    } else {
         Arvore->Reg.repeticao = novo;
     }
 }
 
-short adicionaLinhaArv(char *Palavra, int nLinha, TipoApontadorArv Arvore){
+short adicionaLinhaArv(char *Palavra, int nLinha, TipoApontadorArv Arvore) {
     short achou = FALSE;
-    if (strcmp(Arvore->Reg.Chave,Palavra) == 0){
-        criaRepeticaoArv(nLinha,Arvore);
+    if (strcmp(Arvore->Reg.Chave, Palavra) == 0) {
+        criaRepeticaoArv(nLinha, Arvore);
         return TRUE;
     }
-    if (Arvore->Esq != NULL){
+    if (Arvore->Esq != NULL) {
         achou = adicionaLinhaArv(Palavra, nLinha, Arvore->Esq);
-        if (achou == TRUE){
+        if (achou == TRUE) {
             return achou;
         }
     }
-    
-    if (Arvore->Dir != NULL){
+
+    if (Arvore->Dir != NULL) {
         achou = adicionaLinhaArv(Palavra, nLinha, Arvore->Dir);
-        if (achou == TRUE){
+        if (achou == TRUE) {
             return achou;
         }
     }
@@ -393,18 +408,19 @@ TipoApontadorArv criaArvore(FILE* indice) {
     char Palavra[256];
     char Linha[256];
     TipoRegistro x;
-    int i, j, k, n, aux=0;
+    int i, j, k, n, pos = 0, aux = 0;
     Inicializa(&Dicionario);
 
     while (fgets(Linha, 256, indice) != NULL) {
-        for (i = 0; i < strlen(Linha)-1; i++) {
-            Palavra[i]=Linha[i];
+        pos++;
+        for (i = 0; i < strlen(Linha) - 1; i++) {
+            Palavra[i] = Linha[i];
         }
-        TipoRegistro *novo= criaRegistro(Palavra);
-        memset(Palavra,0,sizeof(Palavra));
-        InsereArv(*novo,&Dicionario);
+        TipoRegistro *novo = criaRegistro(Palavra, pos);
+        memset(Palavra, 0, sizeof (Palavra));
+        InsereArv(*novo, &Dicionario);
     }
     Testa(Dicionario);
-//    imprimeArv(Dicionario);
+    //    imprimeArv(Dicionario);
     return Dicionario;
 }
