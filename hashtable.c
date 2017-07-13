@@ -184,26 +184,21 @@ void criaRepeticaoHash(int nLinha, TipoItem Item) {
 void ordenaHash(TipoDicionario T, TipoDicionario ordenado) {
     TipoItem* aux = T[0];
     TipoItem* auxT = NULL;
-    int k = 1;
+    int j = 0;
     for (int i = 0; i < M; i++) {
+        j=0;
         aux = T[i];
-        if (T[i] != NULL){
-            for (int j = 0; j < k; j++) {
-                if (aux != NULL) {
-                    if ((ordenado[j] == NULL) || (strcmp(ordenado[j]->Chave, aux->Chave) >= 0)) {
-                        printf("%d %d ", i, j);
-                        puts(aux->Chave);
-                        auxT = ordenado[j];
-                        ordenado[j] = aux;
-                        aux = auxT;
-                    }
+        if (T[i] != NULL) {
+            while (aux != NULL) {
+                if ((ordenado[j] == NULL) || (strcmp(ordenado[j]->Chave, aux->Chave) >= 0)) {
+                    printf("%d %d ", i, j);
+                    puts(aux->Chave);
+                    auxT = ordenado[j];
+                    ordenado[j] = aux;
+                    aux = auxT;
                 }
-                else {
-                    break;
-                }
+                j++;
             }
-            k++;
-            
         }
     }
 }
