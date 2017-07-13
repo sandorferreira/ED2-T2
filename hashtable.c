@@ -142,6 +142,18 @@ void imprimeLinhas(TipoDicionario T, int i, FILE* ArqSaida) {
     fprintf(ArqSaida, "\n");
 }
 
+int procuraLinhaHash(int linha, TipoChaveHash palavra, TipoDicionario T) {
+    TipoApontadorHash ap = Pesquisa(palavra, T);
+    TipoRepeticaoHash* aux = T[ap]->repeticao;
+    while (aux != NULL) {
+        if (aux->linha == linha) {
+            return 1;
+        }
+        aux = aux->proximo;
+    }
+    return 0;
+}
+
 void LerPalavraHash(char *p, int Tam) {
     char c;
     int i, j;
@@ -166,5 +178,40 @@ void criaRepeticaoHash(int nLinha, TipoItem Item) {
         aux->proximo = novo;
     } else {
         Item.repeticao = novo;
+    }
+}
+
+void ordenaHash(TipoDicionario T, TipoDicionario ordenado) {
+    TipoItem* aux = T[0];
+    TipoItem* auxT = NULL;
+    int k = 1;
+    for (int i = 0; i < M; i++) {
+        aux = T[i];
+        if (T[i] != NULL){
+            for (int j = 0; j < k; j++) {
+                if (aux != NULL) {
+                    if ((ordenado[j] == NULL) || (strcmp(ordenado[j]->Chave, aux->Chave) >= 0)) {
+                        printf("%d %d ", i, j);
+                        puts(aux->Chave);
+                        auxT = ordenado[j];
+                        ordenado[j] = aux;
+                        aux = auxT;
+                    }
+                }
+                else {
+                    break;
+                }
+            }
+            k++;
+            
+        }
+    }
+}
+
+void imprimeHash(TipoDicionario T, FILE* ArqSaida) {
+    for (int i = 0; i < M; i++) {
+        if (T[i] != NULL) {
+            fprintf(ArqSaida, "%d %s\n", i, T[i]->Chave);
+        }
     }
 }

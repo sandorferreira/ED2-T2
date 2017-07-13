@@ -42,12 +42,8 @@ void indiceArvore() {
             }
         }
     }
-    int pos = 0;
     teste = 1;
-    while (teste != 0) {
-        pos++;
-        teste = imprimeArv(arvore, pos, ArqTeste);
-    }
+    imprimeArv(arvore, ArqTeste);
     if (aux) {
         puts(Palavra);
         *Palavra = '\0';
@@ -77,7 +73,10 @@ void indiceHash() {
             }
         }
     }
-    ImprimeHash(hash, ArqTeste);
+    TipoDicionario hashOrdenado;
+    imprimeHash(hash, ArqTeste);
+    ordenaHash(hash, hashOrdenado);
+//    ImprimeHash(hash, ArqTeste);
     if (aux) {
         puts(Palavra);
         *Palavra = '\0';
@@ -86,9 +85,49 @@ void indiceHash() {
     fclose(ArqAlf);
 }
 
+void imprimeLinha(int nLinha) {
+    int aux = 0;
+    rewind(ArqTxt);
+    while (fgets(Linha, 1250, ArqTxt) != NULL) { //ENQUANTO PEGAR LINHA DO LISTA
+        aux++;
+        if (aux == nLinha) {
+            puts(Linha);
+        }
+    }
+}
+
+void imprimeLinhasArv(TipoRegistro* no1, TipoRegistro* no2) {
+    TipoRepeticao* aux1 = no1->repeticao;
+    TipoRepeticao* aux2 = no2->repeticao;
+    while (aux1 != NULL) {
+        while (aux2 != NULL) {
+            if (aux1->linha == aux2->linha) {
+                rewind(ArqTxt);
+                imprimeLinha(aux1->linha);
+            }
+            aux2 = aux2->proximo;
+        }
+        aux2 = no2->repeticao;
+        aux1 = aux1->proximo;
+    }
+}
+
 void buscaArvore() {
-    char palavra1[50], palavra2[50];
-    scanf("%s %s", palavra1, palavra2);
+    char palavras[50][50];
+    int i = 0, j = 0;
+    getchar();
+    while (palavras[i][j - 1] != 10) {
+        palavras[i][j] = getchar();
+        if (palavras[i][j] == 32) {
+            palavras[i][j] = 0;
+            i++;
+            j = 0;
+        } else {
+            j++;
+        }
+    }
+    palavras[i][j - 1] = 0;
+    palavras[i + 1][0] = 0;
     TipoApontadorArv arvore = criaArvore(ArqPalavras);
     int nLinha = 0;
     aux = FALSE;
@@ -109,42 +148,64 @@ void buscaArvore() {
             }
         }
     }
-    TipoRegistro* aux1 = pesquisaArv(arvore, palavra1);
-    TipoRegistro* aux2 = pesquisaArv(arvore, palavra2);
-    imprimeLinhasArv(aux1, aux2);
+    TipoRegistro* reg = pesquisaArv(arvore, palavras[0]);
+    TipoRepeticao* aux = reg->repeticao;
+    int linha;
+    if (strlen(palavras[1]) != 0) {
+        while (reg != NULL) {
+            linha = 0;
+            i = 1;
+            while (strlen(palavras[i]) != 0) {
+                linha = procuraLinhaArv(aux->linha, palavras[i], arvore);
+                i++;
+            }
+            if (linha == 1) {
+                imprimeLinha(aux->linha);
+            }
+            reg = aux->proximo;
+        }
+    } else {
+        while (aux != NULL) {
+            imprimeLinha(aux->linha);
+            aux = aux->proximo;
+        }
+    }
     fclose(ArqTxt);
     fclose(ArqAlf);
 }
 
-void imprimeLinhasArv(TipoRegistro* no1, TipoRegistro* no2) {
-    TipoRepeticao* aux1 = no1->repeticao;
-    TipoRepeticao* aux2 = no2->repeticao;
-    while (aux1 != NULL) {
-        while (aux2 != NULL) {
-            if (aux1->linha == aux2->linha) {
+void imprimeLinhasHash(TipoRepeticaoHash* aux1, TipoRepeticaoHash* aux2) {
+    TipoRepeticaoHash* item1 = aux1;
+    TipoRepeticaoHash* item2 = aux2;
+    while (item1 != NULL) {
+        while (item2 != NULL) {
+            if (item1->linha == item2->linha) {
                 rewind(ArqTxt);
-                imprimeLinha(aux1->linha);
+                imprimeLinha(item1->linha);
             }
-            aux2 = aux2->proximo;
+            item2 = item2->proximo;
         }
-        aux2 = no2->repeticao;
-        aux1 = aux1->proximo;
-    }
-}
-
-void imprimeLinha(int nLinha) {
-    int aux = 0;
-    while (fgets(Linha, 1250, ArqTxt) != NULL) { //ENQUANTO PEGAR LINHA DO LISTA
-        aux++;
-        if (aux == nLinha) {
-            puts(Linha);
-        }
+        item2 = aux2;
+        item1 = item1->proximo;
     }
 }
 
 void buscaHash() {
-    char palavra1[50], palavra2[50];
-    scanf("%s %s", palavra1, palavra2);
+    char palavras[50][50];
+    int i = 0, j = 0;
+    getchar();
+    while (palavras[i][j - 1] != 10) {
+        palavras[i][j] = getchar();
+        if (palavras[i][j] == 32) {
+            palavras[i][j] = 0;
+            i++;
+            j = 0;
+        } else {
+            j++;
+        }
+    }
+    palavras[i][j - 1] = 0;
+    palavras[i + 1][0] = 0;
     TipoDicionario hash;
     criaHash(ArqPalavras, hash);
     int nLinha = 0;
@@ -165,27 +226,30 @@ void buscaHash() {
             }
         }
     }
-    int aux1 = Pesquisa(palavra1, hash);
-    int aux2 = Pesquisa(palavra2, hash);
-    imprimeLinhasHash(hash[aux1]->repeticao, hash[aux2]->repeticao);
+    int pos = Pesquisa(palavras[0], hash);
+    int linha;
+    TipoRepeticaoHash* aux = hash[pos]->repeticao;
+    if (strlen(palavras[1]) != 0) {
+        while (aux != NULL) {
+            linha = 0;
+            i = 1;
+            while (strlen(palavras[i]) != 0) {
+                linha = procuraLinhaHash(aux->linha, palavras[i], hash);
+                i++;
+            }
+            if (linha == 1) {
+                imprimeLinha(aux->linha);
+            }
+            aux = aux->proximo;
+        }
+    } else {
+        while (aux != NULL) {
+            imprimeLinha(aux->linha);
+            aux = aux->proximo;
+        }
+    }
     fclose(ArqTxt);
     fclose(ArqAlf);
-}
-
-void imprimeLinhasHash (TipoRepeticaoHash* aux1, TipoRepeticaoHash* aux2){
-    TipoRepeticaoHash* item1 = aux1;
-    TipoRepeticaoHash* item2 = aux2;
-    while (item1 != NULL){
-        while (item2 != NULL){
-            if (item1->linha == item2->linha){
-                rewind(ArqTxt);
-                imprimeLinha(item1->linha);
-            }
-            item2 = item2->proximo;
-        }
-        item2 = aux2;
-        item1 = item1->proximo;
-    }
 }
 
 void DefineAlfabeto(short *Alfabeto) {

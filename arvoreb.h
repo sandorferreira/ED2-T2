@@ -16,7 +16,6 @@ typedef struct TipoRepeticao TipoRepeticao;
 typedef struct TipoRegistro {
     /* outros componentes */
     char Chave[250];
-    int pos;
     struct TipoRepeticao *repeticao;
 } TipoRegistro;
 
@@ -51,9 +50,10 @@ void Testa2(TipoApontadorArv p, int *NivelFolhas, short *PrimeiraFolha);
 void Testa(TipoApontadorArv Arvore);
 double rand0a1();
 void Permut(int *A, int n);
-TipoRegistro* criaRegistro(char *Palavra, int pos);
+TipoRegistro* criaRegistro(char *Palavra);
+void imprimeArvore(TipoApontadorArv Arvore);
 void imprimeArv2(TipoApontadorArv Arvore, FILE* ArqSaida);
-short imprimeArv(TipoApontadorArv Arvore, int pos, FILE* ArqSaida);
+void imprimeArv(TipoApontadorArv Arvore, FILE* ArqSaida);
 void criaRepeticaoArv(int nLinha, TipoApontadorArv Arvore);
 short adicionaLinhaArv(char *Palavra, int nLinha, TipoApontadorArv Arvore);
 TipoApontadorArv criaArvore(FILE* indice);
