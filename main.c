@@ -12,14 +12,48 @@ comando */
 #define MAXALFABETO 255
 #define TRUE 1
 #define FALSE 0
+
 typedef short TipoAlfabeto[MAXALFABETO + 1];
 int palavrasIndice;
 FILE *ArqTxt, *ArqAlf, *ArqPalavras, *ArqTeste;
 TipoAlfabeto Alfabeto;
 char Palavra[256];
+char Indice[1000][256];
 char Linha[1250];
 int i;
 short aux;
+
+void pegaIndice(FILE* ArqPalavras) {
+    int j=0;
+    while (fgets(Linha, 256, ArqPalavras) != NULL) {
+        for (i = 0; i < strlen(Linha) - 1; i++) {
+            Indice[j][i] = Linha[i];
+        }
+        j++;
+    }
+    j++;
+}
+
+void ordenaIndice(){
+    int j=0;
+    char aux[256];
+    while(Indice[i+1][0] != 0){
+        if (strcmp(Indice[i],Indice[i+1])>0){
+            strcpy(aux,Indice[i]);
+            strcpy(Indice[i],Indice[i+1]);
+            strcpy(Indice[i+1],aux);
+            if(i>0)
+                i-=2;
+            else
+                i-=1;
+        }
+        i++;
+    }
+//    for (i=0;i<1000;i++){
+//        if (Indice[i][0]!=0)
+//            puts(Indice[i]);
+//    }
+}
 
 void indiceArvore() {
     TipoApontadorArv arvore = criaArvore(ArqPalavras);
@@ -54,7 +88,12 @@ void indiceArvore() {
 
 void indiceHash() {
     TipoDicionario hash;
-    criaHash(ArqPalavras, hash);
+    InicializaHash(hash);
+    for(i=0;i<1000;i++){
+        if(Indice[i][0]!=0)
+            InsereHash(Indice[i],hash);
+    }
+    ordenaIndice();
     int nLinha = 0;
     aux = FALSE;
     short teste = FALSE;
@@ -73,9 +112,14 @@ void indiceHash() {
             }
         }
     }
-    TipoDicionario hashOrdenado;
-    ordenaHash2(hash, hashOrdenado);
-    imprimeHash(hashOrdenado, ArqTeste);
+    int apontador;
+    for (i=0;i<1000;i++){
+        if(Indice[i][0]!=0){
+            apontador=Pesquisa(Indice[i], hash);
+            imprimeHash(apontador, hash, ArqTeste);
+        }
+    }
+//    imprimeHash(hash, ArqTeste);
 //    ImprimeHash(hash, ArqTeste);
     if (aux) {
         puts(Palavra);
@@ -207,7 +251,11 @@ void buscaHash() {
     palavras[i][j - 1] = 0;
     palavras[i + 1][0] = 0;
     TipoDicionario hash;
-    criaHash(ArqPalavras, hash);
+    InicializaHash(hash);
+    for(i=0;i<1000;i++){
+        if(Indice[i][0]!=0)
+            InsereHash(Indice[i],hash);
+    }
     int nLinha = 0;
     aux = FALSE;
     short teste;
@@ -272,6 +320,8 @@ int main(int argc, char *argv[]) {
     ArqAlf = fopen("Alfabeto.txt", "r");
     ArqPalavras = fopen("Palavras_Chave.txt", "r");
     ArqTeste = fopen("saida.txt", "w"); //O TRABALHO TEM Q ATUALIZAR O INDICE, MAS PARA N TER Q VOLTAR A CADA TESTE....
+    pegaIndice(ArqPalavras);
+    ordenaIndice();
     DefineAlfabeto(Alfabeto);
     int hashOuArv;
     scanf("%d", &hashOuArv);

@@ -33,17 +33,12 @@ void InicializaHash(TipoDicionario T) {
     for (i = 0; i < M; i++) T[i] = NULL;
 }
 
-void criaHash(FILE* indice, TipoDicionario T) {
+void criaHash(char *indice[], TipoDicionario T) {
     InicializaHash(T);
-    int pos = 0;
-    char Palavra[256], Linha[256];
-    while (fgets(Linha, 256, indice) != NULL) {
-        pos++;
-        for (i = 0; i < strlen(Linha) - 1; i++) {
-            Palavra[i] = Linha[i];
-        }
-        InsereHash(Palavra, T, pos);
-        memset(Palavra, 0, sizeof (Palavra));
+    puts(&indice[0]);
+    for (int i = 0; i < 1000; i++) {
+        if (indice[i][0] != 0)
+            InsereHash(indice[i], T);
     }
 }
 
@@ -63,22 +58,21 @@ TipoApontadorHash Pesquisa(TipoChaveHash Ch, TipoDicionario T) {
     }
 }
 
-void InsereHash(TipoChaveHash x, TipoDicionario T, int pos) {
+void InsereHash(TipoChaveHash x, TipoDicionario T) {
     unsigned int i = 0;
     unsigned int Inicial;
     Inicial = h(x);
     while (T[(Inicial + i) % M] != NULL && (i < M))
         i++;
     if (i < M) {
-        novaPalavraHash(x, T, (Inicial + i) % M, pos);
+        novaPalavraHash(x, T, (Inicial + i) % M);
     } else printf("Está cheio?!\n");
 }
 
-void novaPalavraHash(TipoChaveHash Chave, TipoDicionario T, int aux, int pos) {
+void novaPalavraHash(TipoChaveHash Chave, TipoDicionario T, int aux) {
     TipoItem *novo = (TipoItem*) malloc(sizeof (TipoItem));
     strcpy(novo->Chave, Chave);
     novo->repeticao = NULL;
-    novo->pos = pos;
     T[aux] = novo;
 }
 
@@ -121,12 +115,11 @@ void ImprimeHash(TipoDicionario tabela, FILE* ArqSaida) {
     int i, j, tam;
     int pos = 1;
     for (i = 0; i < M; i++) {
-        if (tabela[i] != NULL && tabela[i]->pos == pos) {
+        if (tabela[i] != NULL) {
             tam = strlen(tabela[i]->Chave);
             for (j = 0; j < tam; j++)
                 putc(tabela[i]->Chave[j], ArqSaida);
             imprimeLinhas(tabela, i, ArqSaida);
-            putchar('\n');
             pos++;
             i = -1;
         }
@@ -205,48 +198,45 @@ void ordenaHash(TipoDicionario T, TipoDicionario ordenado) {
 
 void ordenaHash2(TipoDicionario T, TipoDicionario ordenado) {
     TipoItem* aux = NULL;
-    for (int i =0; i<M;i++){
+    for (int i = 0; i < M; i++) {
         ordenado[i] = T[i];
     }
     int k;
     for (int i = 0; i < M; i++) {
-        if (ordenado[i] == NULL){
-            k=i;
-            while (ordenado[k] == NULL){
+        if (ordenado[i] == NULL) {
+            k = i;
+            while (ordenado[k] == NULL) {
                 k++;
-                if (k == (M-1)){
+                if (k == (M - 1)) {
                     break;
                 }
             }
-            if (k == (M-1)){
+            if (k == (M - 1)) {
                 break;
             }
             ordenado[i] = ordenado[k];
             ordenado[k] = NULL;
-            i=0;
+            i = 0;
         }
     }
-    k=0;
-    while(ordenado[k+1] != NULL){
-        if (strcmp(ordenado[k]->Chave,ordenado[k+1]->Chave) > 0){
-            aux = ordenado[k+1];
-            ordenado[k+1] = ordenado[k];
-            ordenado[k]= aux;
-            if (k>0)
-                k-=2;
+    k = 0;
+    while (ordenado[k + 1] != NULL) {
+        if (strcmp(ordenado[k]->Chave, ordenado[k + 1]->Chave) > 0) {
+            aux = ordenado[k + 1];
+            ordenado[k + 1] = ordenado[k];
+            ordenado[k] = aux;
+            if (k > 0)
+                k -= 2;
             else
-                k-=1;
+                k -= 1;
         }
         k++;
     }
 }
 
-void imprimeHash(TipoDicionario T, FILE* ArqSaida) {
-    for (int i = 0; i < M; i++) {
-        if (T[i] != NULL) {
-            fprintf(ArqSaida, "%d %s\n", i, T[i]->Chave);
-        }
-        else
-            break;
-    }
+void imprimeHash(TipoApontadorHash apontador, TipoDicionario T, FILE* Saida) {
+    int tam = strlen(T[apontador]->Chave);
+    for (int j = 0; j < tam; j++)
+        putc(T[apontador]->Chave[j], Saida);
+    imprimeLinhas(T, apontador, Saida);
 }
