@@ -74,8 +74,8 @@ void indiceHash() {
         }
     }
     TipoDicionario hashOrdenado;
-    imprimeHash(hash, ArqTeste);
-    ordenaHash(hash, hashOrdenado);
+    ordenaHash2(hash, hashOrdenado);
+    imprimeHash(hashOrdenado, ArqTeste);
 //    ImprimeHash(hash, ArqTeste);
     if (aux) {
         puts(Palavra);

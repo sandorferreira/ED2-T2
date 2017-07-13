@@ -186,7 +186,7 @@ void ordenaHash(TipoDicionario T, TipoDicionario ordenado) {
     TipoItem* auxT = NULL;
     int j = 0;
     for (int i = 0; i < M; i++) {
-        j=0;
+        j = 0;
         aux = T[i];
         if (T[i] != NULL) {
             while (aux != NULL) {
@@ -203,10 +203,50 @@ void ordenaHash(TipoDicionario T, TipoDicionario ordenado) {
     }
 }
 
+void ordenaHash2(TipoDicionario T, TipoDicionario ordenado) {
+    TipoItem* aux = NULL;
+    for (int i =0; i<M;i++){
+        ordenado[i] = T[i];
+    }
+    int k;
+    for (int i = 0; i < M; i++) {
+        if (ordenado[i] == NULL){
+            k=i;
+            while (ordenado[k] == NULL){
+                k++;
+                if (k == (M-1)){
+                    break;
+                }
+            }
+            if (k == (M-1)){
+                break;
+            }
+            ordenado[i] = ordenado[k];
+            ordenado[k] = NULL;
+            i=0;
+        }
+    }
+    k=0;
+    while(ordenado[k+1] != NULL){
+        if (strcmp(ordenado[k]->Chave,ordenado[k+1]->Chave) > 0){
+            aux = ordenado[k+1];
+            ordenado[k+1] = ordenado[k];
+            ordenado[k]= aux;
+            if (k>0)
+                k-=2;
+            else
+                k-=1;
+        }
+        k++;
+    }
+}
+
 void imprimeHash(TipoDicionario T, FILE* ArqSaida) {
     for (int i = 0; i < M; i++) {
         if (T[i] != NULL) {
             fprintf(ArqSaida, "%d %s\n", i, T[i]->Chave);
         }
+        else
+            break;
     }
 }
