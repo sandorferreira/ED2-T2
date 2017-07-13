@@ -8,16 +8,6 @@
 
 int j, i;
 
-void GeraPesos(TipoPesos p) { /* -Gera valores randomicos entre 1 e 10.000- */
-    int i;
-    struct timeval semente;
-    /* Utilizar o tempo como semente para a funcao srand() */
-    gettimeofday(&semente, NULL);
-    srand((int) (semente.tv_sec + 1000000 * semente.tv_usec));
-    for (i = 0; i < N; i++)
-        p[i] = 1 + (int) (10000.0 * rand() / (RAND_MAX + 1.0));
-}
-
 TipoIndice h(TipoChaveHash Chave) {
     int i;
     unsigned int Soma = 0;
@@ -31,15 +21,6 @@ TipoIndice h(TipoChaveHash Chave) {
 void InicializaHash(TipoDicionario T) {
     int i;
     for (i = 0; i < M; i++) T[i] = NULL;
-}
-
-void criaHash(char *indice[], TipoDicionario T) {
-    InicializaHash(T);
-    puts(&indice[0]);
-    for (int i = 0; i < 1000; i++) {
-        if (indice[i][0] != 0)
-            InsereHash(indice[i], T);
-    }
 }
 
 TipoApontadorHash Pesquisa(TipoChaveHash Ch, TipoDicionario T) {
@@ -104,28 +85,6 @@ void adicionaLinhaHash(TipoDicionario T, int pos, int nLinha) {
     }
 }
 
-void RetiraHash(TipoChaveHash Ch, TipoPesos p, TipoDicionario T) {
-    TipoIndice i;
-    i = Pesquisa(Ch, T);
-    if (i < M) {
-    } else printf("Registro nao esta presente\n");
-}
-
-void ImprimeHash(TipoDicionario tabela, FILE* ArqSaida) {
-    int i, j, tam;
-    int pos = 1;
-    for (i = 0; i < M; i++) {
-        if (tabela[i] != NULL) {
-            tam = strlen(tabela[i]->Chave);
-            for (j = 0; j < tam; j++)
-                putc(tabela[i]->Chave[j], ArqSaida);
-            imprimeLinhas(tabela, i, ArqSaida);
-            pos++;
-            i = -1;
-        }
-    }
-} /* Imprime */
-
 void imprimeLinhas(TipoDicionario T, int i, FILE* ArqSaida) {
     TipoRepeticaoHash* aux = T[i]->repeticao;
     while (aux != NULL) {
@@ -147,18 +106,6 @@ int procuraLinhaHash(int linha, TipoChaveHash palavra, TipoDicionario T) {
     return 0;
 }
 
-void LerPalavraHash(char *p, int Tam) {
-    char c;
-    int i, j;
-    fflush(stdin);
-    j = 0;
-    while (((c = getchar()) != '\n') && (j < (Tam - 1))) p[j++] = c;
-    p[j] = '\0';
-    while (c != '\n') c = getchar();
-    /* Desconsiderar espacos ao final da cadeia como ocorre no Pascal.*/
-    for (i = j - 1; (i >= 0 && p[i] == ' '); i--) p[i] = '\0';
-}
-
 void criaRepeticaoHash(int nLinha, TipoItem Item) {
     TipoRepeticaoHash* novo = (TipoRepeticaoHash*) malloc(sizeof (TipoRepeticaoHash));
     novo->linha = nLinha;
@@ -171,66 +118,6 @@ void criaRepeticaoHash(int nLinha, TipoItem Item) {
         aux->proximo = novo;
     } else {
         Item.repeticao = novo;
-    }
-}
-
-void ordenaHash(TipoDicionario T, TipoDicionario ordenado) {
-    TipoItem* aux = T[0];
-    TipoItem* auxT = NULL;
-    int j = 0;
-    for (int i = 0; i < M; i++) {
-        j = 0;
-        aux = T[i];
-        if (T[i] != NULL) {
-            while (aux != NULL) {
-                if ((ordenado[j] == NULL) || (strcmp(ordenado[j]->Chave, aux->Chave) >= 0)) {
-                    printf("%d %d ", i, j);
-                    puts(aux->Chave);
-                    auxT = ordenado[j];
-                    ordenado[j] = aux;
-                    aux = auxT;
-                }
-                j++;
-            }
-        }
-    }
-}
-
-void ordenaHash2(TipoDicionario T, TipoDicionario ordenado) {
-    TipoItem* aux = NULL;
-    for (int i = 0; i < M; i++) {
-        ordenado[i] = T[i];
-    }
-    int k;
-    for (int i = 0; i < M; i++) {
-        if (ordenado[i] == NULL) {
-            k = i;
-            while (ordenado[k] == NULL) {
-                k++;
-                if (k == (M - 1)) {
-                    break;
-                }
-            }
-            if (k == (M - 1)) {
-                break;
-            }
-            ordenado[i] = ordenado[k];
-            ordenado[k] = NULL;
-            i = 0;
-        }
-    }
-    k = 0;
-    while (ordenado[k + 1] != NULL) {
-        if (strcmp(ordenado[k]->Chave, ordenado[k + 1]->Chave) > 0) {
-            aux = ordenado[k + 1];
-            ordenado[k + 1] = ordenado[k];
-            ordenado[k] = aux;
-            if (k > 0)
-                k -= 2;
-            else
-                k -= 1;
-        }
-        k++;
     }
 }
 

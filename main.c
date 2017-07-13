@@ -24,7 +24,7 @@ int i;
 short aux;
 
 void pegaIndice(FILE* ArqPalavras) {
-    int j=0;
+    int j = 0;
     while (fgets(Linha, 256, ArqPalavras) != NULL) {
         for (i = 0; i < strlen(Linha) - 1; i++) {
             Indice[j][i] = Linha[i];
@@ -34,25 +34,25 @@ void pegaIndice(FILE* ArqPalavras) {
     j++;
 }
 
-void ordenaIndice(){
-    int j=0;
+void ordenaIndice() {
+    int j = 0;
     char aux[256];
-    while(Indice[i+1][0] != 0){
-        if (strcmp(Indice[i],Indice[i+1])>0){
-            strcpy(aux,Indice[i]);
-            strcpy(Indice[i],Indice[i+1]);
-            strcpy(Indice[i+1],aux);
-            if(i>0)
-                i-=2;
+    while (Indice[i + 1][0] != 0) {
+        if (strcmp(Indice[i], Indice[i + 1]) > 0) {
+            strcpy(aux, Indice[i]);
+            strcpy(Indice[i], Indice[i + 1]);
+            strcpy(Indice[i + 1], aux);
+            if (i > 0)
+                i -= 2;
             else
-                i-=1;
+                i -= 1;
         }
         i++;
     }
-//    for (i=0;i<1000;i++){
-//        if (Indice[i][0]!=0)
-//            puts(Indice[i]);
-//    }
+    //    for (i=0;i<1000;i++){
+    //        if (Indice[i][0]!=0)
+    //            puts(Indice[i]);
+    //    }
 }
 
 void indiceArvore() {
@@ -89,9 +89,9 @@ void indiceArvore() {
 void indiceHash() {
     TipoDicionario hash;
     InicializaHash(hash);
-    for(i=0;i<1000;i++){
-        if(Indice[i][0]!=0)
-            InsereHash(Indice[i],hash);
+    for (i = 0; i < 1000; i++) {
+        if (Indice[i][0] != 0)
+            InsereHash(Indice[i], hash);
     }
     ordenaIndice();
     int nLinha = 0;
@@ -113,14 +113,14 @@ void indiceHash() {
         }
     }
     int apontador;
-    for (i=0;i<1000;i++){
-        if(Indice[i][0]!=0){
-            apontador=Pesquisa(Indice[i], hash);
+    for (i = 0; i < 1000; i++) {
+        if (Indice[i][0] != 0) {
+            apontador = Pesquisa(Indice[i], hash);
             imprimeHash(apontador, hash, ArqTeste);
         }
     }
-//    imprimeHash(hash, ArqTeste);
-//    ImprimeHash(hash, ArqTeste);
+    //    imprimeHash(hash, ArqTeste);
+    //    ImprimeHash(hash, ArqTeste);
     if (aux) {
         puts(Palavra);
         *Palavra = '\0';
@@ -252,9 +252,9 @@ void buscaHash() {
     palavras[i + 1][0] = 0;
     TipoDicionario hash;
     InicializaHash(hash);
-    for(i=0;i<1000;i++){
-        if(Indice[i][0]!=0)
-            InsereHash(Indice[i],hash);
+    for (i = 0; i < 1000; i++) {
+        if (Indice[i][0] != 0)
+            InsereHash(Indice[i], hash);
     }
     int nLinha = 0;
     aux = FALSE;

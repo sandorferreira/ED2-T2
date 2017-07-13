@@ -29,21 +29,16 @@ TipoPesos p;
 TipoItem Elemento;
 
 // Funcoes
-void GeraPesos(TipoPesos p);
 TipoIndice h(TipoChaveHash Chave);
 void InicializaHash(TipoDicionario T);
-void criaHash(char* indice[], TipoDicionario T);
-TipoApontadorHash PesquisaHash(TipoChaveHash Ch, TipoDicionario T);
+TipoApontadorHash Pesquisa(TipoChaveHash Ch, TipoDicionario T);
 void InsereHash(TipoChaveHash x, TipoDicionario T);
 void novaPalavraHash(TipoChaveHash Chave, TipoDicionario T, int aux);
 void checaPalavraHash(TipoDicionario T, TipoChaveHash x, int nLinha);
 void adicionaLinhaHash(TipoDicionario T, int pos, int nLinha);
-void RetiraHash(TipoChaveHash Ch, TipoPesos p, TipoDicionario T);
 void imprimeLinhas(TipoDicionario T, int i, FILE* ArqSaida);
-void ImprimeHash(TipoDicionario tabela, FILE* ArqSaida);
-int procuraLinhaHash (int linha, TipoChaveHash palavra, TipoDicionario T);
-void LerPalavraHash(char *p, int Tam);
-void ordenaHash (TipoDicionario T, TipoDicionario ordenado);
+void imprimeHash(TipoApontadorHash apontador, TipoDicionario T, FILE* Saida);
+int procuraLinhaHash(int linha, TipoChaveHash palavra, TipoDicionario T);
 void criaRepeticaoHash(int nLinha, TipoItem Item);
 
 #endif
