@@ -52,7 +52,6 @@ void Testa(TipoApontadorArv Arvore);
 double rand0a1();
 void Permut(int *A, int n);
 TipoRegistro* criaRegistro(char *Palavra, int pos);
-void imprimeArvore(TipoApontadorArv Arvore);
 void imprimeArv2(TipoApontadorArv Arvore, FILE* ArqSaida);
 short imprimeArv(TipoApontadorArv Arvore, int pos, FILE* ArqSaida);
 void criaRepeticaoArv(int nLinha, TipoApontadorArv Arvore);

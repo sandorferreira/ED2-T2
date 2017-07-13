@@ -142,18 +142,6 @@ void imprimeLinhas(TipoDicionario T, int i, FILE* ArqSaida) {
     fprintf(ArqSaida, "\n");
 }
 
-int procuraLinhaHash (int linha, TipoChaveHash palavra, TipoDicionario T){
-    TipoApontadorHash ap = Pesquisa(palavra,T);
-    TipoRepeticaoHash* aux = T[ap]->repeticao;
-    while (aux!=NULL){
-        if (aux->linha == linha){
-            return 1;
-        }
-        aux = aux->proximo;
-    }
-    return 0;
-}
-
 void LerPalavraHash(char *p, int Tam) {
     char c;
     int i, j;

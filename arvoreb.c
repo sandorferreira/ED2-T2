@@ -3,7 +3,6 @@
 #include<string.h>
 #include<stdio.h>
 #include"arvoreb.h"
-#include "hashtable.h"
 #define TRUE  1
 #define FALSE 0
 #define MAX 10
@@ -330,14 +329,6 @@ TipoRegistro* criaRegistro(char *Palavra, int pos) {
     return novo;
 }
 
-void imprimeArvore(TipoApontadorArv Arvore) {
-    if(Arvore->Esq != NULL)
-        imprimeArvore(Arvore->Esq);
-    printf("%s\n",Arvore->Reg.Chave);
-    if(Arvore->Dir != NULL)
-        imprimeArvore(Arvore->Dir);
-}
-
 void imprimeArv2(TipoApontadorArv Arvore, FILE* ArqSaida) {
     fprintf(ArqSaida, "%s", Arvore->Reg.Chave);
     if (Arvore->Reg.repeticao != NULL) {
@@ -427,18 +418,6 @@ short adicionaLinhaArv(char *Palavra, int nLinha, TipoApontadorArv Arvore) {
             return achou;
         }
     }
-}
-
-int procuraLinhaArv (int linha, TipoChave palavra, TipoDicionario T){
-    TipoRegistro* reg = pesquisaArv(T, palavra);
-    TipoRepeticao* rep = reg->repeticao;
-    while (rep != NULL){
-        if (rep->linha == linha){
-            return 1;
-        }
-        rep = rep->proximo;
-    }
-    return 0;
 }
 
 TipoApontadorArv criaArvore(FILE* indice) {
