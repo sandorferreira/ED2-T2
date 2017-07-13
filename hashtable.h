@@ -42,6 +42,7 @@ void adicionaLinhaHash(TipoDicionario T, int pos, int nLinha);
 void RetiraHash(TipoChaveHash Ch, TipoPesos p, TipoDicionario T);
 void imprimeLinhas(TipoDicionario T, int i, FILE* ArqSaida);
 void ImprimeHash(TipoDicionario tabela, FILE* ArqSaida);
+int procuraLinhaHash (int linha, TipoChaveHash palavra, TipoDicionario T);
 void LerPalavraHash(char *p, int Tam);
 void criaRepeticaoHash(int nLinha, TipoItem Item);
 
