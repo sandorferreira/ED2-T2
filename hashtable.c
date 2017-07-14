@@ -85,13 +85,13 @@ void adicionaLinhaHash(TipoDicionario T, int pos, int nLinha) {
     }
 }
 
-void imprimeLinhas(TipoDicionario T, int i, FILE* ArqSaida) {
+void imprimeLinhas(TipoDicionario T, int i) {
     TipoRepeticaoHash* aux = T[i]->repeticao;
     while (aux != NULL) {
-        fprintf(ArqSaida, " %d", aux->linha);
+        printf(" %d", aux->linha);
         aux = aux->proximo;
     }
-    fprintf(ArqSaida, "\n");
+    printf("\n");
 }
 
 int procuraLinhaHash(int linha, TipoChaveHash palavra, TipoDicionario T) {
@@ -121,9 +121,9 @@ void criaRepeticaoHash(int nLinha, TipoItem Item) {
     }
 }
 
-void imprimeHash(TipoApontadorHash apontador, TipoDicionario T, FILE* Saida) {
+void imprimeHash(TipoApontadorHash apontador, TipoDicionario T) {
     int tam = strlen(T[apontador]->Chave);
     for (int j = 0; j < tam; j++)
-        putc(T[apontador]->Chave[j], Saida);
-    imprimeLinhas(T, apontador, Saida);
+        printf("%c", T[apontador]->Chave[j]);
+    imprimeLinhas(T, apontador);
 }

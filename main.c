@@ -75,7 +75,6 @@ void indiceArvore() {
         Insere(novo, &arvore);
         Testa(arvore);
     }
-//    Central(arvore);
 
     int nLinha = 0;
     aux = FALSE;
@@ -137,11 +136,9 @@ void indiceHash() {
     for (i = 0; i < 1000; i++) {
         if (Indice[i][0] != 0) {
             apontador = Pesquisa(Indice[i], hash);
-            imprimeHash(apontador, hash, ArqTeste);
+            imprimeHash(apontador, hash);
         }
     }
-    //    imprimeHash(hash, ArqTeste);
-    //    ImprimeHash(hash, ArqTeste);
     if (aux) {
         puts(Palavra);
         *Palavra = '\0';
@@ -193,7 +190,26 @@ void buscaArvore() {
     }
     palavras[i][j - 1] = 0;
     palavras[i + 1][0] = 0;
-    TipoNo* arvore = criaArvore();
+    TipoNo* arvore = NULL;
+    int nLinhas = 0;
+    for (i = 0; i < 1000; i++) {
+        if (Indice[i][0] == 0)
+            break;
+        nLinhas++;
+    }
+    int vetorIndices[nLinhas];
+    for (i = 0; i < nLinhas; i++) {
+        vetorIndices[i] = i;
+    }
+    Permut(vetorIndices, nLinhas - 1);
+    for (int i = 0; i < nLinhas; i++) {
+        TipoRegistro novo;
+        //    puts(vetorPalavras[vetorIndices[i]]);
+        novo.Chave = Indice[vetorIndices[i]];
+        novo.repeticao = NULL;
+        Insere(novo, &arvore);
+        Testa(arvore);
+    }
     int nLinha = 0;
     aux = FALSE;
     short teste;
@@ -340,7 +356,6 @@ int main(int argc, char *argv[]) {
     ArqTxt = fopen("Texto.txt", "r");
     ArqAlf = fopen("Alfabeto.txt", "r");
     ArqPalavras = fopen("Palavras_Chave.txt", "r");
-    ArqTeste = fopen("saida.txt", "w"); //O TRABALHO TEM Q ATUALIZAR O INDICE, MAS PARA N TER Q VOLTAR A CADA TESTE....
     pegaIndice(ArqPalavras);
     ordenaIndice();
     DefineAlfabeto(Alfabeto);

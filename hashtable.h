@@ -36,8 +36,8 @@ void InsereHash(TipoChaveHash x, TipoDicionario T);
 void novaPalavraHash(TipoChaveHash Chave, TipoDicionario T, int aux);
 void checaPalavraHash(TipoDicionario T, TipoChaveHash x, int nLinha);
 void adicionaLinhaHash(TipoDicionario T, int pos, int nLinha);
-void imprimeLinhas(TipoDicionario T, int i, FILE* ArqSaida);
-void imprimeHash(TipoApontadorHash apontador, TipoDicionario T, FILE* Saida);
+void imprimeLinhas(TipoDicionario T, int i);
+void imprimeHash(TipoApontadorHash apontador, TipoDicionario T);
 int procuraLinhaHash(int linha, TipoChaveHash palavra, TipoDicionario T);
 void criaRepeticaoHash(int nLinha, TipoItem Item);
 
