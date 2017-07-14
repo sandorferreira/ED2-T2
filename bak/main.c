@@ -6,7 +6,7 @@ comando */
 #include <string.h>
 #include <stdlib.h>
 #include <stdio.h>
-#include "arvore.h"
+#include "arvoreb.h"
 #include "hashtable.h"
 
 #define MAXALFABETO 255
@@ -35,6 +35,7 @@ void pegaIndice(FILE* ArqPalavras) {
 }
 
 void ordenaIndice() {
+    int j = 0;
     char aux[256];
     while (Indice[i + 1][0] != 0) {
         if (strcmp(Indice[i], Indice[i + 1]) > 0) {
@@ -55,7 +56,7 @@ void ordenaIndice() {
 }
 
 void indiceArvore() {
-    TipoNo* arvore = criaArvore();
+    TipoApontadorArv arvore = criaArvore(ArqPalavras);
     int nLinha = 0;
     aux = FALSE;
     short teste;
@@ -67,7 +68,7 @@ void indiceArvore() {
                 aux = TRUE;
             } else {
                 if (aux) {
-                    //puts(Palavra);
+                    //                    puts(Palavra);
                     teste = adicionaLinhaArv(Palavra, nLinha, arvore);
                     *Palavra = '\0';
                     aux = FALSE;
@@ -76,8 +77,7 @@ void indiceArvore() {
         }
     }
     teste = 1;
-//    Central(arvore);
-//    imprimeArvore(arvore);
+    imprimeArv(arvore, ArqTeste);
     if (aux) {
         puts(Palavra);
         *Palavra = '\0';
@@ -172,7 +172,7 @@ void buscaArvore() {
     }
     palavras[i][j - 1] = 0;
     palavras[i + 1][0] = 0;
-    TipoNo* arvore = criaArvore();
+    TipoApontadorArv arvore = criaArvore(ArqPalavras);
     int nLinha = 0;
     aux = FALSE;
     short teste;
