@@ -243,7 +243,7 @@ void buscaArvore() {
             if (linha == 1) {
                 imprimeLinha(aux->linha);
             }
-            reg = aux->proximo;
+            aux = aux->proximo;
         }
     } else {
         while (aux != NULL) {
