@@ -55,7 +55,28 @@ void ordenaIndice() {
 }
 
 void indiceArvore() {
-    TipoNo* arvore = criaArvore();
+    TipoNo* arvore = NULL;
+    int nLinhas = 0;
+    for (i = 0; i < 1000; i++) {
+        if (Indice[i][0] == 0)
+            break;
+        nLinhas++;
+    }
+    int vetorIndices[nLinhas];
+    for (i = 0; i < nLinhas; i++) {
+        vetorIndices[i] = i;
+    }
+    Permut(vetorIndices, nLinhas - 1);
+    for (int i = 0; i < nLinhas; i++) {
+        TipoRegistro novo;
+        //    puts(vetorPalavras[vetorIndices[i]]);
+        novo.Chave = Indice[vetorIndices[i]];
+        novo.repeticao = NULL;
+        Insere(novo, &arvore);
+        Testa(arvore);
+    }
+//    Central(arvore);
+
     int nLinha = 0;
     aux = FALSE;
     short teste;
@@ -76,8 +97,8 @@ void indiceArvore() {
         }
     }
     teste = 1;
-//    Central(arvore);
-//    imprimeArvore(arvore);
+    //    Central(arvore);
+        imprimeArvore(arvore);
     if (aux) {
         puts(Palavra);
         *Palavra = '\0';

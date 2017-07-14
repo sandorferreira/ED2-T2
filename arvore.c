@@ -165,8 +165,8 @@ void imprimeNo(TipoNo* Arvore) {
             printf(" %d", aux->linha);
             aux = aux->proximo;
         }
-        printf("\n");
     }
+        printf("\n");
 }
 
 void imprimeArvore(TipoNo* arv) {
@@ -174,6 +174,26 @@ void imprimeArvore(TipoNo* arv) {
   imprimeArvore(arv->Esq);
   imprimeNo(arv);
   imprimeArvore(arv->Dir);
+  }
+}
+
+void imprimeNo2(TipoNo* Arvore, FILE* saida) {
+    fprintf(saida, "%s", Arvore->Reg.Chave);
+    if (Arvore->Reg.repeticao != NULL) {
+        TipoRepeticao *aux = Arvore->Reg.repeticao;
+        while (aux != NULL) {
+            fprintf(saida," %d", aux->linha);
+            aux = aux->proximo;
+        }
+    }
+        fprintf(saida, "\n");
+}
+
+void imprimeArvore2(TipoNo* arv, FILE* saida) {
+  if (arv != NULL) { 
+  imprimeArvore2(arv->Esq, saida);
+  imprimeNo2(arv,saida);
+  imprimeArvore2(arv->Dir, saida);
   }
 }
 
@@ -218,13 +238,13 @@ TipoNo* criaArvore() {
   
   for(int i = 0; i < nPalavras; i ++) {
     TipoRegistro novo;
+//    puts(vetorPalavras[vetorIndices[i]]);
     novo.Chave = vetorPalavras[vetorIndices[i]];
     novo.repeticao = NULL;
     Insere(novo, &arvore);
     Testa(arvore);
   }
-  //imprimeArvore(arvore);
-  //arvAux = arvore;
+  imprimeArvore(arvore);
 
   return arvore;
 }
